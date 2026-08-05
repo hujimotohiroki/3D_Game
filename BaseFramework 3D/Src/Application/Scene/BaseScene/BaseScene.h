@@ -21,7 +21,7 @@ public :
 	{
 		return m_objList;
 	}
-	
+
 	// オブジェクトリストに追加
 	void AddObject(const std::shared_ptr<KdGameObject>& _obj)
 	{

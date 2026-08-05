@@ -88,6 +88,30 @@
     <Filter Include="Src\Application\GameObject\Camera\FPSCamera">
       <UniqueIdentifier>{cd662ee1-c913-4e31-addc-42ef89e2668c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Character">
+      <UniqueIdentifier>{96cbdc58-42c7-4eea-af96-2f8286aa89a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Player">
+      <UniqueIdentifier>{b61d6fa8-62ab-4200-a696-ef631c561aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Player\TopChara">
+      <UniqueIdentifier>{1eca1599-4d7e-4cea-9edb-8e828cbd0ad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Character\Player\SideChara">
+      <UniqueIdentifier>{d5a16243-3f32-40e7-acfd-693da5e2181a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Scene\StageSelectScene">
+      <UniqueIdentifier>{6d4fcbb6-1295-40ab-8df9-79581fdab2fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\StageSelect">
+      <UniqueIdentifier>{509d40e9-40eb-49db-8b8b-77c2c8233db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage">
+      <UniqueIdentifier>{2aef0692-6290-46f9-ba62-7fc129b30dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\Ground">
+      <UniqueIdentifier>{c7d8c6f4-0867-4733-903e-ade3de07c688}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -273,6 +297,33 @@
     <ClInclude Include="Src\Application\GameObject\Camera\FPSCamera\FPSCamera.h">
       <Filter>Src\Application\GameObject\Camera\FPSCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Player\PlayerBase.h">
+      <Filter>Src\Application\GameObject\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Player\TopChara\TopChara.h">
+      <Filter>Src\Application\GameObject\Character\Player\TopChara</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Player\SideChara\SideChara.h">
+      <Filter>Src\Application\GameObject\Character\Player\SideChara</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\StageSelectScene\StageSelectScene.h">
+      <Filter>Src\Application\Scene\StageSelectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\StageSelect\StageSelect.h">
+      <Filter>Src\Application\GameObject\StageSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Stage.h">
+      <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Ground\TopGround.h">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\StageObjectBase.h">
+      <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Ground\SideGround.h">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -427,6 +478,30 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Camera\FPSCamera\FPSCamera.cpp">
       <Filter>Src\Application\GameObject\Camera\FPSCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Player\PlayerBase.cpp">
+      <Filter>Src\Application\GameObject\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Player\TopChara\TopChara.cpp">
+      <Filter>Src\Application\GameObject\Character\Player\TopChara</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Player\SideChara\SideChara.cpp">
+      <Filter>Src\Application\GameObject\Character\Player\SideChara</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\StageSelectScene\StageSelectScene.cpp">
+      <Filter>Src\Application\Scene\StageSelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\StageSelect\StageSelect.cpp">
+      <Filter>Src\Application\GameObject\StageSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp">
+      <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Ground\TopGround.cpp">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Ground\SideGround.cpp">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
