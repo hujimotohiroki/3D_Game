@@ -503,6 +503,9 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\SideGround.cpp">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\StageObjectBase.cpp">
+      <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Framework\Shader\inc_KdCommon.hlsli">
