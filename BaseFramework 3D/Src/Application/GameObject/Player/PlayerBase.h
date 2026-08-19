@@ -7,8 +7,7 @@ public:
 	void SetGameScene(GameScene* scene) { m_gameScene = scene; }
 protected:
 	GameScene* m_gameScene = nullptr;
-	std::shared_ptr<KdModelData> m_topmodel;
-	std::shared_ptr<KdModelData> m_sidemodel;
+	std::shared_ptr<KdModelData> m_model;
 	Math::Vector3 m_pos = Math::Vector3::Zero;
 	Math::Vector3 m_dir = Math::Vector3::Zero;
 	Math::Vector3 m_rot = Math::Vector3::Zero;

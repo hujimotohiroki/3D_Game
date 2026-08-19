@@ -3,10 +3,8 @@
 
 void SideChara::Init()
 {
-	m_topmodel = std::make_shared<KdModelData>();
-	m_topmodel->Load("Asset/tmp/Crystal.gltf");
-	m_sidemodel = std::make_shared<KdModelData>();
-	m_sidemodel->Load("Asset/tmp/Crystal.gltf");
+	m_model = std::make_shared<KdModelData>();
+	m_model->Load("Asset/tmp/Crystal.gltf");
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
@@ -52,17 +50,20 @@ void SideChara::PostUpdate()
 	
 	//デバッグ用
 	m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, kRedColor);
+
+	//Z軸固定忘れずに
+
 }
 
 void SideChara::GenerateDepthMapFromLight()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Top) 
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_topmodel, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Side) 
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_sidemodel, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 }
 
@@ -70,11 +71,11 @@ void SideChara::DrawLit()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Top)
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_topmodel, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Side)
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_sidemodel, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	
 }

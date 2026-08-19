@@ -324,6 +324,9 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\SideGround.h">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Ground\MidGround.h">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -505,6 +508,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\StageObjectBase.cpp">
       <Filter>Src\Application\GameObject\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Ground\MidGround.cpp">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

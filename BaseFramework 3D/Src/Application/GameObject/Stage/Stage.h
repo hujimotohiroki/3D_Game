@@ -18,6 +18,8 @@ private:
 	void LoadStage();
 
 	Math::Vector3 m_pos = Math::Vector3::Zero;
+	
+	int StageData[3][3]={0,0,0,0,0,0,0,0,0};
 
 	int m_stage;
 };

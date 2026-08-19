@@ -2,6 +2,7 @@
 #include "../SceneManager.h"
 #include "../../GameObject/StageSelect/StageSelect.h"
 #include "../../GameObject/Stage/Stage.h"
+#include "../../Scene/GameScene/GameScene.h"
 
 void StageSelectScene::Event()
 {
@@ -17,7 +18,7 @@ void StageSelectScene::Event()
 		SceneManager::Instance().AddObject(stage);
 	}
 	
-	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+	if (GetAsyncKeyState('E') & 0x8000)
 	{
 		SceneManager::Instance().SetNextScene
 		(

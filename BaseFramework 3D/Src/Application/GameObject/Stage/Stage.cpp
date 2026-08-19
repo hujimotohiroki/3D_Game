@@ -1,5 +1,7 @@
 ﻿#include "Stage.h"
+#include "../../Scene/SceneManager.h"
 #include "Ground/TopGround.h"
+#include "Ground/MidGround.h"
 #include "../../Scene/GameScene/GameScene.h"
 void Stage::Init()
 {
@@ -40,13 +42,27 @@ void Stage::LoadStage()
 				fscanf_s(fp, "%d,", &Data);
 				switch(Data) {
 					case 0:
+						StageData[i][j] = 0;
 						break;
 					case 1:
-						std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
-						topGround->SetGameScene(m_gameScene);
-						topGround->SetPos(Math::Vector3((float)j, 0.0f, (float)i));
-						topGround->Init();
-						m_gameScene->AddObject(topGround);
+						StageData[i][j] = 1;
+						if (i != 0 && StageData[i - 1][j] == 0)
+						{
+							std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
+							topGround->SetGameScene(m_gameScene);
+							topGround->SetPos(Math::Vector3((float)j*2.1f, (float)i*(-2.1f), 0.0f));
+							topGround->Init();
+							SceneManager::Instance().AddObject(topGround);
+						}
+						else
+						{
+							std::shared_ptr<MidGround> midGround = std::make_shared<MidGround>();
+							midGround->SetGameScene(m_gameScene);
+							midGround->SetPos(Math::Vector3((float)j*2.1f, (float)i*(-2.1f), 0.0f));
+							midGround->Init();
+							SceneManager::Instance().AddObject(midGround);
+						}
+						
 						break;
 				}
 			}
