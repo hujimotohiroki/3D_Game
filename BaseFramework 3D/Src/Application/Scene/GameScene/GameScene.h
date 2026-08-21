@@ -20,6 +20,7 @@ public :
 	~GameScene() {}
 
 	NowChara GetNowChara() { return chara; }
+	void SetNextStage();
 private:
 
 	void Event() override;

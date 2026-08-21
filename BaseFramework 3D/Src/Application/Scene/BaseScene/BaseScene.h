@@ -28,6 +28,12 @@ public :
 		m_objList.push_back(_obj);
 	}
 
+	// StageSelectSceneでしか使わない
+	int GetNowSelect() { return nowselect; }
+
+	// GameSceneでしか使わない
+	void SetNowStage(int stage) { m_nowStage = stage; }
+
 protected :
 
 	// 継承先シーンで必要ならオーバーライドする
@@ -36,4 +42,7 @@ protected :
 
 	// 全オブジェクトのアドレスをリストで管理
 	std::list<std::shared_ptr<KdGameObject>> m_objList;
+
+	int nowselect = 1;
+	int m_nowStage = 1;
 };

@@ -11,6 +11,8 @@ public:
 	void DrawLit()override;
 private:
 	
-	const float speed = 0.125f;
-	
+	const float speed = 0.25f;
+	float m_gravity = 0;
+	float m_gravityacc = 0.01f;
+	bool m_jumpFlg = false;
 };

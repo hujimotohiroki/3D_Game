@@ -4,6 +4,7 @@
 #include "TitleScene/TitleScene.h"
 #include "StageSelectScene/StageSelectScene.h"
 #include "GameScene/GameScene.h"
+#include "../GameObject/Stage/Stage.h"
 
 void SceneManager::PreUpdate()
 {
@@ -68,7 +69,14 @@ void SceneManager::ChangeScene(SceneType _sceneType)
 		m_currentScene = std::make_shared<StageSelectScene>();
 		break;
 	case SceneType::Game:
+		//ここに現在選択しているステージを渡す処理を追加する
+		int nowstage=m_currentScene->GetNowSelect();
 		m_currentScene = std::make_shared<GameScene>();
+		m_currentScene->SetNowStage(nowstage);
+		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
+		stage->SetStage(nowstage);
+		stage->Init();
+		SceneManager::Instance().AddObject(stage);
 		break;
 	}
 

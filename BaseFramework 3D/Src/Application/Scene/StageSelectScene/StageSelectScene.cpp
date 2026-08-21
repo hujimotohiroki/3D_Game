@@ -12,10 +12,7 @@ void StageSelectScene::Event()
 		(
 			SceneManager::SceneType::Game
 		);
-		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
-		stage->SetStage(stageselect->GetStage());
-		stage->Init();
-		SceneManager::Instance().AddObject(stage);
+		
 	}
 	
 	if (GetAsyncKeyState('E') & 0x8000)

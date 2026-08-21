@@ -10,7 +10,7 @@ void Stage::Init()
 
 void Stage::LoadStage()
 {
-	FILE* fp;
+	FILE* fp=NULL;
 	switch (m_stage) {
 	case 1:
 		fp = fopen("StageData/Stage1.txt", "r");
@@ -50,7 +50,7 @@ void Stage::LoadStage()
 						{
 							std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
 							topGround->SetGameScene(m_gameScene);
-							topGround->SetPos(Math::Vector3((float)j*2.1f, (float)i*(-2.1f), 0.0f));
+							topGround->SetPos(Math::Vector3((float)j*2.0f, (float)i*(-2.0f), 0.0f));
 							topGround->Init();
 							SceneManager::Instance().AddObject(topGround);
 						}
@@ -58,7 +58,7 @@ void Stage::LoadStage()
 						{
 							std::shared_ptr<MidGround> midGround = std::make_shared<MidGround>();
 							midGround->SetGameScene(m_gameScene);
-							midGround->SetPos(Math::Vector3((float)j*2.1f, (float)i*(-2.1f), 0.0f));
+							midGround->SetPos(Math::Vector3((float)j*2.0f, (float)i*(-2.0f), 0.0f));
 							midGround->Init();
 							SceneManager::Instance().AddObject(midGround);
 						}
