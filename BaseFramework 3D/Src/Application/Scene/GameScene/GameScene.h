@@ -29,10 +29,9 @@ private:
 	KdModelData m_model;
 
 	std::shared_ptr<TPSCamera>		Tcamera = nullptr;
-	std::shared_ptr<TopChara>		top = nullptr;
-	std::shared_ptr<SideChara>		side = nullptr;
+	
 
-	NowChara chara = NowChara::Top;
+	NowChara chara = NowChara::Side;
 
 	bool shiftFlg = false;
 };

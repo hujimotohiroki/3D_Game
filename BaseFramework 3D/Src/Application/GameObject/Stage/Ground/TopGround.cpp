@@ -10,6 +10,7 @@ void TopGround::Init()
 
 void TopGround::Update()
 {
+	m_mWorld = Math::Matrix::CreateTranslation(m_pos);
 }
 
 void TopGround::GenerateDepthMapFromLight()

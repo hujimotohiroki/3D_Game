@@ -11,6 +11,7 @@ void SideGround::Init()
 
 void SideGround::Update()
 {
+	/*
 	if (m_gameScene->GetNowChara() != GameScene::NowChara::Side)
 	{
 		m_isExpired = true;
@@ -20,6 +21,13 @@ void SideGround::Update()
 		topGround->Init();
 		m_gameScene->AddObject(topGround);
 	}
+	m_pos += m_dir * speed;
+	m_gravity += m_gravityacc;
+	m_dir.y -= m_gravity;
+	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
+	Math::Matrix rotMat = Math::Matrix::CreateRotationY(m_rot.y);
+
+	m_mWorld = rotMat * transMat;*/
 }
 
 void SideGround::GenerateDepthMapFromLight()

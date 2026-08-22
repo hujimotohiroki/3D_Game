@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 class GameScene;
+class TopChara;
+class SideChara;
 
 class Stage :public KdGameObject
 {
@@ -19,7 +21,10 @@ private:
 
 	Math::Vector3 m_pos = Math::Vector3::Zero;
 	
-	int StageData[3][3]={0,0,0,0,0,0,0,0,0};
+	int StageData[10][20];//[y][x]
 
 	int m_stage;
+
+	std::shared_ptr<TopChara>		top = nullptr;
+	std::shared_ptr<SideChara>		side = nullptr;
 };

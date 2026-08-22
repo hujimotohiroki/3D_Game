@@ -5,6 +5,7 @@ class PlayerBase :public KdGameObject
 public:
 	Math::Vector3 GetPos() { return m_pos; }
 	void SetGameScene(GameScene* scene) { m_gameScene = scene; }
+	void SetPos(Math::Vector3 pos) { m_pos = pos; }
 protected:
 	GameScene* m_gameScene = nullptr;
 	std::shared_ptr<KdModelData> m_model;

@@ -112,6 +112,9 @@
     <Filter Include="Src\Application\GameObject\Stage\Ground">
       <UniqueIdentifier>{c7d8c6f4-0867-4733-903e-ade3de07c688}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\Block">
+      <UniqueIdentifier>{345dad6c-0b31-4857-9c26-5ae297fb2f57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -327,6 +330,12 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\MidGround.h">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Block\SideBlock.h">
+      <Filter>Src\Application\GameObject\Stage\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Block\TopBlock.h">
+      <Filter>Src\Application\GameObject\Stage\Block</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -511,6 +520,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\MidGround.cpp">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Block\SideBlock.cpp">
+      <Filter>Src\Application\GameObject\Stage\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Block\TopBlock.cpp">
+      <Filter>Src\Application\GameObject\Stage\Block</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

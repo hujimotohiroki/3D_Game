@@ -10,6 +10,7 @@ void MidGround::Init()
 
 void MidGround::Update()
 {
+	m_mWorld = Math::Matrix::CreateTranslation(m_pos);
 }
 
 void MidGround::GenerateDepthMapFromLight()

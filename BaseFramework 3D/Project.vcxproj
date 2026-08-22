@@ -280,6 +280,8 @@
     <ClInclude Include="Src\Application\GameObject\Player\SideChara\SideChara.h" />
     <ClInclude Include="Src\Application\GameObject\Player\TopChara\TopChara.h" />
     <ClInclude Include="Src\Application\GameObject\StageSelect\StageSelect.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\Block\SideBlock.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\Block\TopBlock.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\MidGround.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\SideGround.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\TopGround.h" />
@@ -346,6 +348,8 @@
     <ClCompile Include="Src\Application\GameObject\Player\SideChara\SideChara.cpp" />
     <ClCompile Include="Src\Application\GameObject\Player\TopChara\TopChara.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageSelect\StageSelect.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\Block\SideBlock.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\Block\TopBlock.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\MidGround.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\SideGround.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\TopGround.cpp" />

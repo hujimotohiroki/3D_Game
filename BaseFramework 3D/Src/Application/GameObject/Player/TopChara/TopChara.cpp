@@ -82,6 +82,7 @@ void TopChara::Update()
 	KdDebugGUI::Instance().AddLog("angle : %f\n", m_angle);
 	Math::Matrix rotMatZ = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(m_angle));
 
+	m_pos.z = 1;
 	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos * 2);
 	Math::Matrix rotMatX = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(-90));
 	Math::Matrix scaleMat = Math::Matrix::CreateScale(5);
@@ -93,7 +94,7 @@ void TopChara::PostUpdate()
 	/*if (m_atkFlg == false) return;
 	//当たり判定（アイテムとの）
 	KdCollider::SphereInfo sphere;
-	sphere.m_sphere.Center = GetPos();
+	sphere.m_sphere.Center = GetPos()*2;
 	sphere.m_sphere.Radius = 1.0f;
 	sphere.m_type = KdCollider::TypeDamage;
 

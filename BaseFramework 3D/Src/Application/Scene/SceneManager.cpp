@@ -75,6 +75,7 @@ void SceneManager::ChangeScene(SceneType _sceneType)
 		m_currentScene->SetNowStage(nowstage);
 		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
 		stage->SetStage(nowstage);
+		stage->SetGameScene(dynamic_cast<GameScene*>(m_currentScene.get()));
 		stage->Init();
 		SceneManager::Instance().AddObject(stage);
 		break;
