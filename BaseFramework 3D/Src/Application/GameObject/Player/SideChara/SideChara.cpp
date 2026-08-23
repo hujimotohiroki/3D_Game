@@ -4,8 +4,12 @@
 
 void SideChara::Init()
 {
-	m_model = std::make_shared<KdModelData>();
-	m_model->Load("Asset/Models/TopChara/3D Gum Bot/3D Gum Bot.gltf");
+	m_model = std::make_shared<KdModelWork>();
+	m_model->SetModelData("Asset/Models/Human/low_poly_humans.gltf");
+	m_spAnimator = std::make_shared<KdAnimator>();
+	m_spAnimator->SetAnimation(m_model->GetAnimation("Walk"));
+	m_spAnimator2 = std::make_shared<KdAnimator>();
+	m_spAnimator2->SetAnimation(m_model->GetAnimation("Stop"));
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
@@ -13,20 +17,22 @@ void SideChara::Init()
 void SideChara::Update()
 {
 	if (m_gameScene->GetNowChara() != GameScene::NowChara::Side) return;
+	bool moveFlg = false;
 	m_dir.x = 0;
-	m_rot = Math::Vector3::Zero;
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-		m_dir.x = -1;
-		m_rot.y = 180;
+		m_dir.x = -0.5;
+		m_rot.y = 90;
+		moveFlg = true;
 	}
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-		m_dir.x = 1;
-		m_rot.y = 0;
+		m_dir.x = 0.5;
+		m_rot.y = -90;
+		moveFlg = true;
 	}
 	if (GetAsyncKeyState(VK_UP) & 0x8000) {
 		if(m_jumpFlg)
 		{
-			m_dir.y = 1;
+			m_dir.y = 1.2;
 		}
 		m_jumpFlg = false;
 	}
@@ -34,26 +40,34 @@ void SideChara::Update()
 	m_gravity += m_gravityacc;
 	m_pos.y -= m_gravity;
 	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
-	Math::Matrix rotMat = Math::Matrix::CreateRotationY(m_rot.y);
-	Math::Matrix scaleMat = Math::Matrix::CreateScale(5.0f);
+	Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_rot.y));
+	Math::Matrix scaleMat = Math::Matrix::CreateScale(0.75f);
 	
 	m_mWorld = scaleMat * rotMat * transMat;
-	if (m_pos.x > 100.0f)//右端に到達したら
+	
+	if(m_jumpFlg&&moveFlg)
 	{
-		m_gameScene->SetNextStage();
+		m_spAnimator->AdvanceTime(m_model->WorkNodes());
+		m_model->CalcNodeMatrices();
 	}
+	else
+	{
+		m_spAnimator2->AdvanceTime(m_model->WorkNodes());
+		m_model->CalcNodeMatrices();
+	}
+	
 }
 
 void SideChara::PostUpdate()
 {
-	//KdCollider::BoxInfo box; 
 	KdCollider::SphereInfo sphere;
 
 	//球の中心座標を設定
 	sphere.m_sphere.Center = m_pos;
+	sphere.m_sphere.Center.y -= 0.9f;
 
 	//球の半径を設定
-	sphere.m_sphere.Radius = 0.8f;
+	sphere.m_sphere.Radius = 0.4f;
 
 	//当たり判定をしたいタイプを設定
 	sphere.m_type = KdCollider::TypeGround;
@@ -90,17 +104,17 @@ void SideChara::PostUpdate()
 
 	ray.m_pos = m_pos;
 	static const float enableStepHigh = 0.1f;
-	static const float m_adjustHeight = 1.0f;
+	static const float m_adjustHeight = 1.5f;
 	ray.m_pos.y += enableStepHigh;
 	ray.m_pos.y -= m_adjustHeight;
 	ray.m_dir = Math::Vector3(0, -1, 0);
-	ray.m_range = 0.1f+m_gravity;
+	ray.m_range = 0.2f+m_gravity;
 
 	//当たり判定をしたいタイプを設定
 	ray.m_type = KdCollider::TypeGround;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
+	//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
 
 	//Z軸固定忘れずに
 	//球に当たったオブジェクト情報を格納するリスト
@@ -136,17 +150,21 @@ void SideChara::PostUpdate()
 		m_dir.y = 0;
 		m_jumpFlg = true;
 	}
+	if (m_pos.x > 20.0f)//右端に到達したら
+	{
+		m_gameScene->SetNextStage();
+	}
 }
 
 void SideChara::GenerateDepthMapFromLight()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Top) 
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		//KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Side) 
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		//KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 }
 

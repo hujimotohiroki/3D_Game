@@ -2,21 +2,8 @@
 #include "../SceneManager.h"
 #include "../../GameObject/Camera/TPSCamera/TPSCamera.h"
 #include "../../GameObject/Stage/Stage.h"
-
-void GameScene::SetNextStage()
-{
-	m_objList.clear();
-	Tcamera = std::make_shared<TPSCamera>();
-	Tcamera->Init();
-	m_objList.push_back(Tcamera);
-
-	std::shared_ptr<Stage> stage = std::make_shared<Stage>();
-	stage->SetStage(m_nowStage);
-	stage->Init();
-	m_objList.push_back(stage);
-
-	shiftFlg = false;
-}
+#include "../../GameObject/TV/TV.h"
+#include "../../GameObject/TV/REC.h"
 
 void GameScene::Event()
 {
@@ -39,6 +26,31 @@ void GameScene::Event()
 	{
 		shiftFlg = false;
 	}
+	if (NextStageFlg)
+	{
+		m_nowStage++;
+		m_objList.clear();
+		Tcamera = std::make_shared<TPSCamera>();
+		Tcamera->Init();
+		m_objList.push_back(Tcamera);
+
+		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
+		stage->SetStage(m_nowStage);
+		stage->SetGameScene(this);
+		stage->Init();
+		m_objList.push_back(stage);
+
+		std::shared_ptr<TV> tv = std::make_shared<TV>();
+		tv->Init();
+		m_objList.push_back(tv);
+
+		std::shared_ptr<REC> rec = std::make_shared<REC>();
+		rec->Init();
+		m_objList.push_back(rec);
+
+		shiftFlg = false;
+		NextStageFlg = false;
+	}
 }
 
 void GameScene::Init()
@@ -46,6 +58,14 @@ void GameScene::Init()
 	Tcamera = std::make_shared<TPSCamera>();
 	Tcamera->Init();
 	m_objList.push_back(Tcamera);
+
+	std::shared_ptr<TV> tv = std::make_shared<TV>();
+	tv->Init();
+	m_objList.push_back(tv);
+
+	std::shared_ptr<REC> rec = std::make_shared<REC>();
+	rec->Init();
+	m_objList.push_back(rec);
 
 	shiftFlg = false;
 }

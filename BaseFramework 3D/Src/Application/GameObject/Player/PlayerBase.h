@@ -8,7 +8,7 @@ public:
 	void SetPos(Math::Vector3 pos) { m_pos = pos; }
 protected:
 	GameScene* m_gameScene = nullptr;
-	std::shared_ptr<KdModelData> m_model;
+	std::shared_ptr<KdModelWork> m_model;
 	Math::Vector3 m_pos = Math::Vector3::Zero;
 	Math::Vector3 m_dir = Math::Vector3::Zero;
 	Math::Vector3 m_rot = Math::Vector3::Zero;

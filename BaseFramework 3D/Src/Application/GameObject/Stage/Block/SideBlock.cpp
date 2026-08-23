@@ -6,7 +6,7 @@
 void SideBlock::Init()
 {
 	m_model = std::make_shared<KdModelData>();
-	m_model->Load("Asset/Models/TopChara/3D Gum Bot/3D Gum Bot.gltf");
+	m_model->Load("Asset/Models/Block/SideBlock.gltf");
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("GroundCollision", m_model, KdCollider::TypeGround);
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
@@ -29,9 +29,7 @@ void SideBlock::Update()
 		return;
 	}
 
-
-
-	m_mWorld = Math::Matrix::CreateScale(5) * Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = Math::Matrix::CreateTranslation(m_pos);
 }
 
 void SideBlock::PostUpdate()
@@ -40,7 +38,7 @@ void SideBlock::PostUpdate()
 
 	ray.m_pos = m_pos;
 	static const float enableStepHigh = 0.1f;
-	static const float m_adjustHeight = 2.0f;
+	static const float m_adjustHeight = 1.0f;
 	ray.m_pos.y += enableStepHigh;
 	ray.m_pos.y -= m_adjustHeight;
 	ray.m_dir = Math::Vector3(0, -1, 0);
@@ -50,7 +48,7 @@ void SideBlock::PostUpdate()
 	ray.m_type = KdCollider::TypeGround;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
+	//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
 
 	//Z軸固定忘れずに
 	//球に当たったオブジェクト情報を格納するリスト

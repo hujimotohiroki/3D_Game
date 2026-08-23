@@ -3,8 +3,9 @@
 
 void TopChara::Init()
 {
-	m_model = std::make_shared<KdModelData>();
-	m_model->Load("Asset/Models/TopChara/3D Gum Bot/3D Gum Bot.gltf");
+	m_model = std::make_shared<KdModelWork>();
+	m_model->SetModelData("Asset/Models/TopChara/3D Gum Bot/3D Gum Bot.gltf");
+	m_mWorld = Math::Matrix::CreateTranslation(Math::Vector3{ 0, 0, -100});
 }
 
 void TopChara::Update()
@@ -114,7 +115,7 @@ void TopChara::GenerateDepthMapFromLight()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Side)
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		//KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Top)
 	{
@@ -126,7 +127,7 @@ void TopChara::DrawLit()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Side)
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		//KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Top)
 	{

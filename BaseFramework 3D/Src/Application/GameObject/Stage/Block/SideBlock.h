@@ -13,5 +13,5 @@ public:
 private:
 	std::weak_ptr<KdGameObject> m_wpTarget;
 	float m_gravity = 0;
-	float m_gravityacc = 0.01f;
+	float m_gravityacc = 0.05f;
 };

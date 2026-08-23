@@ -10,7 +10,7 @@ public:
 	void GenerateDepthMapFromLight()override;
 	void DrawLit()override;
 private:
-	const float speed = 0.125f;
+	const float speed = 0.06f;
 	float m_angle = 0;
 	Math::Vector3 toDir = { 0, 1, 0 };
 };

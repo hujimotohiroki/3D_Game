@@ -3,6 +3,7 @@
 #include "Ground/TopGround.h"
 #include "Ground/MidGround.h"
 #include "Block/SideBlock.h"
+#include "Back/FirstBack.h"
 #include "../Player/SideChara/SideChara.h"
 #include "../Player/TopChara/TopChara.h"
 #include "../../Scene/GameScene/GameScene.h"
@@ -36,7 +37,11 @@ void Stage::LoadStage()
 		break;
 	}
 
-
+	std::shared_ptr<FirstBack> firstBack = std::make_shared<FirstBack>();
+	firstBack->SetGameScene(m_gameScene);
+	firstBack->SetPos(Math::Vector3(0, 0, 27.0f));
+	firstBack->Init();
+	SceneManager::Instance().AddObject(firstBack);
 
 	if (fp != nullptr) {
 		int x, y, Data;
@@ -96,6 +101,7 @@ void Stage::LoadStage()
 						SceneManager::Instance().AddObject(sideBlock);
 						break;
 				}
+				
 			}
 		}
 		fclose(fp);

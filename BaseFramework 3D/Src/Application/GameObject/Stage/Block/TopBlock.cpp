@@ -5,7 +5,7 @@
 void TopBlock::Init()
 {
 	m_model = std::make_shared<KdModelData>();
-	m_model->Load("Asset/Models/Ground/topground.gltf");
+	m_model->Load("Asset/Models/Block/SideBlock.gltf");
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape("GroundCollision", m_model, KdCollider::TypeDamage);
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
@@ -56,7 +56,7 @@ void TopBlock::PostUpdate()
 	sphere.m_type = KdCollider::TypeGround;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugSphere(sphere.m_sphere.Center, sphere.m_sphere.Radius, kRedColor);
+	//m_pDebugWire->AddDebugSphere(sphere.m_sphere.Center, sphere.m_sphere.Radius, kRedColor);
 
 	//Z軸固定忘れずに
 	//球に当たったオブジェクト情報を格納するリスト

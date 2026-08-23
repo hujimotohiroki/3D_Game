@@ -280,6 +280,7 @@
     <ClInclude Include="Src\Application\GameObject\Player\SideChara\SideChara.h" />
     <ClInclude Include="Src\Application\GameObject\Player\TopChara\TopChara.h" />
     <ClInclude Include="Src\Application\GameObject\StageSelect\StageSelect.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\Back\FirstBack.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Block\SideBlock.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Block\TopBlock.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\MidGround.h" />
@@ -287,6 +288,10 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\TopGround.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Stage.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\StageObjectBase.h" />
+    <ClInclude Include="Src\Application\GameObject\Title\Press Enter.h" />
+    <ClInclude Include="Src\Application\GameObject\Title\Title.h" />
+    <ClInclude Include="Src\Application\GameObject\TV\REC.h" />
+    <ClInclude Include="Src\Application\GameObject\TV\TV.h" />
     <ClInclude Include="Src\Application\main.h" />
     <ClInclude Include="Src\Application\Scene\BaseScene\BaseScene.h" />
     <ClInclude Include="Src\Application\Scene\GameScene\GameScene.h" />
@@ -348,6 +353,7 @@
     <ClCompile Include="Src\Application\GameObject\Player\SideChara\SideChara.cpp" />
     <ClCompile Include="Src\Application\GameObject\Player\TopChara\TopChara.cpp" />
     <ClCompile Include="Src\Application\GameObject\StageSelect\StageSelect.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\Back\FirstBack.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Block\SideBlock.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Block\TopBlock.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\MidGround.cpp" />
@@ -355,6 +361,10 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\TopGround.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Stage.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\StageObjectBase.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Title\Press Enter.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Title\Title.cpp" />
+    <ClCompile Include="Src\Application\GameObject\TV\REC.cpp" />
+    <ClCompile Include="Src\Application\GameObject\TV\TV.cpp" />
     <ClCompile Include="Src\Application\main.cpp" />
     <ClCompile Include="Src\Application\Scene\BaseScene\BaseScene.cpp" />
     <ClCompile Include="Src\Application\Scene\GameScene\GameScene.cpp" />

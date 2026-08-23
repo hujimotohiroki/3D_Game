@@ -20,7 +20,7 @@ public :
 	~GameScene() {}
 
 	NowChara GetNowChara() { return chara; }
-	void SetNextStage();
+	void SetNextStage() { NextStageFlg = true; }
 private:
 
 	void Event() override;
@@ -30,6 +30,7 @@ private:
 
 	std::shared_ptr<TPSCamera>		Tcamera = nullptr;
 	
+	bool NextStageFlg = false;
 
 	NowChara chara = NowChara::Side;
 

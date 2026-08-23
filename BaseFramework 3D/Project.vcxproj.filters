@@ -115,6 +115,15 @@
     <Filter Include="Src\Application\GameObject\Stage\Block">
       <UniqueIdentifier>{345dad6c-0b31-4857-9c26-5ae297fb2f57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\TV">
+      <UniqueIdentifier>{de3beda7-97f5-4dac-8eb9-566ad3867996}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\Back">
+      <UniqueIdentifier>{4e0e434f-a56b-46f3-a30a-3ea9ec239831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\GameObject\Title">
+      <UniqueIdentifier>{e38b59d3-d9d9-4e5e-959e-094b00cd4112}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -336,6 +345,21 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Block\TopBlock.h">
       <Filter>Src\Application\GameObject\Stage\Block</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\TV\TV.h">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Back\FirstBack.h">
+      <Filter>Src\Application\GameObject\Stage\Back</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Title\Title.h">
+      <Filter>Src\Application\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Title\Press Enter.h">
+      <Filter>Src\Application\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\TV\REC.h">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -526,6 +550,21 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\Stage\Block\TopBlock.cpp">
       <Filter>Src\Application\GameObject\Stage\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\TV\TV.cpp">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Back\FirstBack.cpp">
+      <Filter>Src\Application\GameObject\Stage\Back</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Title\Title.cpp">
+      <Filter>Src\Application\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Title\Press Enter.cpp">
+      <Filter>Src\Application\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\TV\REC.cpp">
+      <Filter>Src\Application\GameObject\TV</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
