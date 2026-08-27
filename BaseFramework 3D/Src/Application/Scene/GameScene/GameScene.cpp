@@ -20,6 +20,14 @@ void GameScene::Event()
 		{
 			chara = (NowChara)(((int)chara + 1) % 2);
 			shiftFlg = true;
+			/*if (chara == NowChara::Top)
+			{
+				Tcamera->LookTopChara();
+			}
+			else
+			{
+				Tcamera->LookSideChara();
+			}*/
 		}
 	}
 	else
@@ -42,6 +50,7 @@ void GameScene::Event()
 
 		std::shared_ptr<TV> tv = std::make_shared<TV>();
 		tv->Init();
+		tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
 		m_objList.push_back(tv);
 
 		std::shared_ptr<REC> rec = std::make_shared<REC>();
@@ -59,9 +68,21 @@ void GameScene::Init()
 	Tcamera->Init();
 	m_objList.push_back(Tcamera);
 
-	std::shared_ptr<TV> tv = std::make_shared<TV>();
-	tv->Init();
-	m_objList.push_back(tv);
+	{
+		std::shared_ptr<TV> tv = std::make_shared<TV>();
+		tv->Init();
+		tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
+		tv->SetRotateY(0);
+		m_objList.push_back(tv);
+	}
+
+	/* {
+		std::shared_ptr<TV> tv = std::make_shared<TV>();
+		tv->Init();
+		tv->SetPos(Math::Vector3(0.0f, -6.0f, -26.0f));
+		tv->SetRotateY(180);
+		m_objList.push_back(tv);
+	}*/
 
 	std::shared_ptr<REC> rec = std::make_shared<REC>();
 	rec->Init();

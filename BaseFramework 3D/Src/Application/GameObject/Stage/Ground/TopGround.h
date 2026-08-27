@@ -8,6 +8,7 @@ public:
 	void Update()override;
 	void GenerateDepthMapFromLight()override;
 	void DrawLit()override;
+	void SetStage(int stage) { m_stage = stage; }
 private:
-
+	int m_stage;
 };

@@ -23,8 +23,8 @@ void TPSCamera::PostUpdate()
 
 	// カメラの回転
 	//UpdateRotateByMouse();
-	m_mRotation = GetRotationMatrix();
-	m_mWorld = m_mLocalPos * m_mRotation * _targetMat;
+	//m_mRotation = GetRotationMatrix();
+	m_mWorld = m_mRotation *m_mLocalPos *  _targetMat;
 
 	// ↓めり込み防止の為の座標補正計算↓
 	// ①当たり判定(レイ判定)用の情報作成

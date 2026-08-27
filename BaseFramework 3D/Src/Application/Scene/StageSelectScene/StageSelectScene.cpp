@@ -44,5 +44,6 @@ void StageSelectScene::Init()
 
 	std::shared_ptr<TV> tv = std::make_shared<TV>();
 	tv->Init();
+	tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
 	m_objList.push_back(tv);
 }

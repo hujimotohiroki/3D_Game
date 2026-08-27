@@ -3,9 +3,9 @@
 void TopGround::Init()
 {
 	m_model = std::make_shared<KdModelData>();
-	m_model->Load("Asset/Models/Ground/topground.gltf");
+	m_model->Load("Asset/Models/Stage/Stage" + std::to_string(m_stage) + ".gltf");
 	m_pCollider = std::make_unique<KdCollider>();
-	m_pCollider->RegisterCollisionShape("GroundCollision", m_model, KdCollider::TypeGround);
+	m_pCollider->RegisterCollisionShape("GroundCollision", m_model, KdCollider::TypeGround | KdCollider::TypeBump);
 }
 
 void TopGround::Update()

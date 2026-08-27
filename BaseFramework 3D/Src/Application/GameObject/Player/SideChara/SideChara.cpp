@@ -60,6 +60,85 @@ void SideChara::Update()
 
 void SideChara::PostUpdate()
 {
+
+	// 立方体の当たり判定を行う
+	// DirectX::BoundingOrientedBox を作成して BoxInfo のコンストラクタで初期化する
+	DirectX::BoundingOrientedBox obb;
+	obb.Center = m_pos;
+	obb.Extents = Math::Vector3(0.5f, 1.5f, 0.5f);
+	// 地面判定対象（TypeGround）と衝突して重ならないようにする
+	KdCollider::BoxInfo box(KdCollider::TypeBump, obb);
+
+	// デバッグ可視化: ボックス描画はヒット判定後に色を変えて描画する
+
+	
+	// 立方体に当たったオブジェクト情報を格納するリスト
+	std::list<KdCollider::CollisionResult> retBoxList;
+	for (auto& obj : SceneManager::Instance().GetObjList()) {
+		obj->Intersects(box, &retBoxList);
+	}
+
+	// 立方体に当たったリストから一番重なりが大きいオブジェクトを探す
+	float maxBoxOverlap = 0;
+	bool boxHit = false;
+	Math::Vector3 boxHitDir; // 当たった方向
+	for (auto& ret : retBoxList) {
+		if (maxBoxOverlap < ret.m_overlapDistance) {
+			maxBoxOverlap = ret.m_overlapDistance;
+			boxHitDir = ret.m_hitDir;
+			// 横方向（X）のみで押し戻す。上下の補正はレイによる着地処理で行う
+			boxHitDir.y = 0;
+			boxHitDir.z = 0; // Z軸固定
+			boxHit = true;
+		}
+	}
+	if (boxHit == true) {
+		if (boxHitDir.LengthSquared() > 0.0f) {
+			boxHitDir.Normalize();
+			m_pos += boxHitDir * maxBoxOverlap;
+		}
+	}
+
+	// モデルベースのコライダーは BOX 判定が未実装の場合があるため、球でも補助判定を行う
+	KdCollider::SphereInfo sphere;
+	sphere.m_sphere.Center = m_pos;
+	sphere.m_sphere.Center.y -= 0.9f;
+	sphere.m_sphere.Radius = 0.5f;
+	sphere.m_type = KdCollider::TypeGround;
+
+	std::list<KdCollider::CollisionResult> retSphereList;
+	for (auto& obj : SceneManager::Instance().GetObjList()) {
+		obj->Intersects(sphere, &retSphereList);
+	}
+
+	// 球に当たったリストから一番重なりが大きいものを探す
+	float maxSphereOverlap = 0;
+	bool sphereHit = false;
+	Math::Vector3 sphereHitDir;
+	for (auto& ret : retSphereList) {
+		if (maxSphereOverlap < ret.m_overlapDistance) {
+			maxSphereOverlap = ret.m_overlapDistance;
+			sphereHitDir = ret.m_hitDir;
+			sphereHitDir.z = 0;
+			sphereHit = true;
+		}
+	}
+
+	// 球で当たっているが BOX では検出できていない場合は球の結果で押し戻す
+	if (!boxHit && sphereHit) {
+		if (sphereHitDir.LengthSquared() > 0.0f) {
+			sphereHitDir.Normalize();
+			m_pos += sphereHitDir * maxSphereOverlap;
+			boxHit = true; // 色表示のためヒットと見なす
+		}
+	}
+
+	// デバッグ可視化: ヒットしている場合は赤、していない場合は緑でボックス表示
+	/*
+	if (m_pDebugWire) {
+		Math::Color col = boxHit ? Math::Color(1, 0, 0, 1) : Math::Color(0, 1, 0, 1);
+		m_pDebugWire->AddDebugBox(Math::Matrix::CreateTranslation(m_pos), Math::Vector3(0.5f, 1.0f, 0.5f), Math::Vector3::Zero, true, col);
+	}
 	KdCollider::SphereInfo sphere;
 
 	//球の中心座標を設定
@@ -76,7 +155,7 @@ void SideChara::PostUpdate()
 	//m_pDebugWire->AddDebugSphere(sphere.m_sphere.Center, sphere.m_sphere.Radius, kRedColor);
 
 	//Z軸固定忘れずに
-	//球に当たったオブジェクト情報を格納するリスト
+	// 球に当たったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retSphereList;
 	for (auto& obj : SceneManager::Instance().GetObjList()) {
 		obj->Intersects(sphere, &retSphereList);
@@ -99,7 +178,7 @@ void SideChara::PostUpdate()
 		hitDir.Normalize();
 		m_pos += hitDir * maxOverlap;
 		
-	}
+	}*/
 	KdCollider::RayInfo ray;
 
 	ray.m_pos = m_pos;
@@ -124,7 +203,7 @@ void SideChara::PostUpdate()
 	}
 
 	// レイに当たったリストから一番近いオブジェクトを検出
-	hit = false;
+	bool hit = false;
 	float maxOverLap = 0;
 	Math::Vector3 groundPos = {};	// レイが遮断された(Hitした)座標
 

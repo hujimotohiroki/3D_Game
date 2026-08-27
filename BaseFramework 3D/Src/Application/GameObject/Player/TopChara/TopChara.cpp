@@ -4,7 +4,7 @@
 void TopChara::Init()
 {
 	m_model = std::make_shared<KdModelWork>();
-	m_model->SetModelData("Asset/Models/TopChara/3D Gum Bot/3D Gum Bot.gltf");
+	m_model->SetModelData("Asset/Models/TopChara/Fairy/fairy.gltf");
 	m_mWorld = Math::Matrix::CreateTranslation(Math::Vector3{ 0, 0, -100});
 }
 
@@ -37,8 +37,10 @@ void TopChara::Update()
 		to_pos.x = round(m_pos.x);
 		to_pos.y = round(m_pos.y);
 		m_dir = to_pos - m_pos;
+		m_dir.z = 0;
 		if (m_dir.Length() < speed) {
-			m_pos = to_pos;
+			m_pos.x = to_pos.x;
+			m_pos.y = to_pos.y;
 		}
 		else {
 			m_dir.Normalize();
@@ -82,11 +84,11 @@ void TopChara::Update()
 		}
 	KdDebugGUI::Instance().AddLog("angle : %f\n", m_angle);
 	Math::Matrix rotMatZ = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(m_angle));
-
 	m_pos.z = 1;
+	//m_pos.z = -20.5f;
 	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos * 2);
 	Math::Matrix rotMatX = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(-90));
-	Math::Matrix scaleMat = Math::Matrix::CreateScale(5);
+	Math::Matrix scaleMat = Math::Matrix::CreateScale(1);
 	m_mWorld = scaleMat * rotMatX * rotMatZ * transMat;
 }
 
@@ -115,7 +117,7 @@ void TopChara::GenerateDepthMapFromLight()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Side)
 	{
-		//KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Top)
 	{
@@ -127,7 +129,7 @@ void TopChara::DrawLit()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Side)
 	{
-		//KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Top)
 	{

@@ -8,7 +8,8 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				0
+				0,
+				1
 			]
 		}
 	],
@@ -16,6 +17,15 @@
 		{
 			"mesh":0,
 			"name":"Cube"
+		},
+		{
+			"mesh":1,
+			"name":"\u7403",
+			"translation":[
+				0.08834973722696304,
+				0,
+				0
+			]
 		}
 	],
 	"materials":[
@@ -42,6 +52,20 @@
 						"TEXCOORD_0":2
 					},
 					"indices":3,
+					"material":0
+				}
+			]
+		},
+		{
+			"name":"\u7403",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":4,
+						"NORMAL":5,
+						"TEXCOORD_0":6
+					},
+					"indices":7,
 					"material":0
 				}
 			]
@@ -94,6 +118,40 @@
 			"componentType":5123,
 			"count":60,
 			"type":"SCALAR"
+		},
+		{
+			"bufferView":4,
+			"componentType":5126,
+			"count":208,
+			"max":[
+				0.9999997019767761,
+				0.7071067690849304,
+				0.7071066498756409
+			],
+			"min":[
+				0.6532813906669617,
+				-0.7071067690849304,
+				-0.7071065902709961
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":5,
+			"componentType":5126,
+			"count":208,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":6,
+			"componentType":5126,
+			"count":208,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":7,
+			"componentType":5123,
+			"count":312,
+			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
@@ -120,6 +178,30 @@
 			"byteLength":120,
 			"byteOffset":1280,
 			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":2496,
+			"byteOffset":1400,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2496,
+			"byteOffset":3896,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1664,
+			"byteOffset":6392,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":624,
+			"byteOffset":8056,
+			"target":34963
 		}
 	],
 	"samplers":[
@@ -130,7 +212,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":1400,
+			"byteLength":8680,
 			"uri":"SideBlock.bin"
 		}
 	]
