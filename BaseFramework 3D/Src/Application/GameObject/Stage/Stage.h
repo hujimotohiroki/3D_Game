@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 class GameScene;
-class TopChara;
-class SideChara;
 
 class Stage :public KdGameObject
 {
@@ -25,6 +23,5 @@ private:
 
 	int m_stage;
 
-	std::shared_ptr<TopChara>		top = nullptr;
-	std::shared_ptr<SideChara>		side = nullptr;
+
 };

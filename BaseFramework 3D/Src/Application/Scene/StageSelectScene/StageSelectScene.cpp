@@ -6,6 +6,7 @@
 #include "../../GameObject/TV/TV.h"
 #include "../../GameObject/Camera/TPSCamera/TPSCamera.h"
 #include "../../GameObject/Stage/Back/FirstBack.h"
+#include "../../GameObject/TV/Controller.h"
 
 void StageSelectScene::Event()
 {
@@ -46,4 +47,8 @@ void StageSelectScene::Init()
 	tv->Init();
 	tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
 	m_objList.push_back(tv);
+
+	std::shared_ptr<Controller> controller = std::make_shared<Controller>();
+	controller->Init();
+	m_objList.push_back(controller);
 }

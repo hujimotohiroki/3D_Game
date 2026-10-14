@@ -42,6 +42,11 @@ public:
 		m_wpHitObjectList.push_back(object);
 	}
 
+	void Setm_spCamera(bool FT)
+	{
+		if (FT) m_spCamera = m_spCamera = std::make_shared<KdCamera>();
+		else m_spCamera = nullptr;
+	}
 protected:
 	// カメラ回転用角度
 	Math::Vector3								m_DegAng		= Math::Vector3::Zero;

@@ -6,6 +6,7 @@
 #include "../../GameObject/Title/Press Enter.h"
 #include "../../GameObject/Camera/TPSCamera/TPSCamera.h"
 #include "../../GameObject/Stage/Back/FirstBack.h"
+#include "../../GameObject/TV/Controller.h"
 
 void TitleScene::Event()
 {
@@ -45,4 +46,8 @@ void TitleScene::Init()
 	std::shared_ptr<REC> rec = std::make_shared<REC>();
 	rec->Init();
 	m_objList.push_back(rec);
+
+	std::shared_ptr<Controller> controller = std::make_shared<Controller>();
+	controller->Init();
+	m_objList.push_back(controller);
 }

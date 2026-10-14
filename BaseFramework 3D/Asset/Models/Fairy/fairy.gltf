@@ -330,7 +330,8 @@
 						"NORMAL":13,
 						"TEXCOORD_0":14
 					},
-					"indices":15
+					"indices":15,
+					"material":0
 				}
 			]
 		},
@@ -456,8 +457,8 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"Fairy 1.png",
-			"uri":"Fairy%201.png.png"
+			"name":"Fairy",
+			"uri":"Fairy.png"
 		}
 	],
 	"accessors":[

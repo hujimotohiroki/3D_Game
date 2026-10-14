@@ -360,6 +360,12 @@
     <ClInclude Include="Src\Application\GameObject\TV\REC.h">
       <Filter>Src\Application\GameObject\TV</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\TV\SandStorm.h">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\TV\Controller.h">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -564,6 +570,12 @@
       <Filter>Src\Application\GameObject\Title</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\TV\REC.cpp">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\TV\SandStorm.cpp">
+      <Filter>Src\Application\GameObject\TV</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\TV\Controller.cpp">
       <Filter>Src\Application\GameObject\TV</Filter>
     </ClCompile>
   </ItemGroup>

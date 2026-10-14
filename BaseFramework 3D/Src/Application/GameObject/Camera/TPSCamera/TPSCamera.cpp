@@ -6,9 +6,12 @@ void TPSCamera::Init()
 	CameraBase::Init();
 
 	// 注視点
-	m_mLocalPos = Math::Matrix::CreateTranslation(0, 1.5f, -20.0f);
+	m_mLocalPos = Math::Matrix::CreateTranslation(0.0f, 5.0f, -10.0f);
+
+	m_mRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(90));
 
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
+	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
 
 void TPSCamera::PostUpdate()
@@ -22,9 +25,9 @@ void TPSCamera::PostUpdate()
 	}
 
 	// カメラの回転
-	//UpdateRotateByMouse();
-	//m_mRotation = GetRotationMatrix();
-	m_mWorld = m_mRotation *m_mLocalPos *  _targetMat;
+	UpdateRotateByMouse();
+	m_mRotation = GetRotationMatrix();
+	m_mWorld = m_mLocalPos * m_mRotation * _targetMat   ;
 
 	// ↓めり込み防止の為の座標補正計算↓
 	// ①当たり判定(レイ判定)用の情報作成
@@ -82,4 +85,5 @@ void TPSCamera::PostUpdate()
 			}
 		}
 	}
+	m_pDebugWire->AddDebugLine(rayInfo.m_pos, rayInfo.m_dir, rayInfo.m_range, Math::Color(1, 0, 0, 1));
 }

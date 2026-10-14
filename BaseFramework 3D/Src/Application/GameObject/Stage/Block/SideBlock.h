@@ -7,9 +7,10 @@ public:
 	void Init() override;
 	void Update()override;
 	void PostUpdate()override;
-	void GenerateDepthMapFromLight()override;
+	//void GenerateDepthMapFromLight()override;
 	void DrawLit()override;
 	void SetTarget(std::weak_ptr<KdGameObject> target) { m_wpTarget = target; }
+	void PushBlock(int Flg);
 private:
 	std::weak_ptr<KdGameObject> m_wpTarget;
 	float m_gravity = 0;

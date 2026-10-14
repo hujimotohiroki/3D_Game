@@ -1,12 +1,12 @@
 ﻿#include "FPSCamera.h"
-
+#include "../../Player/SideChara/SideChara.h"
 void FPSCamera::Init()
 {
 	// 親クラスの初期化呼び出し
 	CameraBase::Init();
 
 	// 基準点(ターゲット)の目線
-	m_mLocalPos = Math::Matrix::CreateTranslation(0, 1.5f, 0.0f);
+	m_mLocalPos = Math::Matrix::CreateTranslation(0, 6.0f, 0.0f);
 
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
 }
@@ -22,7 +22,9 @@ void FPSCamera::PostUpdate()
 	}
 
 	// カメラの回転
+
 	UpdateRotateByMouse();
+	
 	m_mRotation = GetRotationMatrix();
-	m_mWorld	= m_mRotation * m_mLocalPos * _targetMat;
+	m_mWorld	= m_mRotation  * _targetMat* m_mLocalPos;
 }
