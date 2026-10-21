@@ -73,6 +73,11 @@ void SideChara::Update()
 		std::shared_ptr<KdGameObject> hitObj = nullptr;    // ヒットしたオブジェクト（最も近いもの）
 
 		for (auto& obj : SceneManager::Instance().GetObjList()) {
+			if (obj.get() == this)
+			{
+				continue;
+			}
+
 			// オブジェクトごとに結果リストを作る
 			std::list<KdCollider::CollisionResult> tmpResults;
 			obj->Intersects(ray, &tmpResults);
@@ -86,19 +91,22 @@ void SideChara::Update()
 				}
 			}
 		}
-		if(hitObj){
+		if (hitObj) {
 			SideBlock* pSideBlock = dynamic_cast<SideBlock*>(hitObj.get());
-			Math::Vector3 p_pos=pSideBlock->GetPos();
-			int dirFlg;
-			if (abs(groundPos.x - p_pos.x) > abs(groundPos.z - p_pos.z)) {
-				if (groundPos.x > p_pos.x) dirFlg = 0;
-				else dirFlg = 2;
+			if (pSideBlock)
+			{
+				Math::Vector3 p_pos = pSideBlock->GetPos();
+				int dirFlg;
+				if (abs(groundPos.x - p_pos.x) > abs(groundPos.z - p_pos.z)) {
+					if (groundPos.x > p_pos.x) dirFlg = 0;
+					else dirFlg = 2;
+				}
+				else {
+					if (groundPos.z > p_pos.z) dirFlg = 1;
+					else dirFlg = 3;
+				}
+				pSideBlock->PushBlock(dirFlg);
 			}
-			else {
-				if (groundPos.z > p_pos.z) dirFlg = 1;
-				else dirFlg = 3;
-			}
-			pSideBlock->PushBlock(dirFlg);
 		}
 		// デバッグ表示（ヒットしたら赤、していなければ緑）
 		bool hit = (hitObj != nullptr);
@@ -106,15 +114,6 @@ void SideChara::Update()
 		m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, col);
 	}
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-		if(paperFlg)
-		{
-			//同じようにレイを飛ばす
-			//うまいこと繋がってるブロックの壁を移動できるようにする
-
-		}
-		else {
-			//飛び出す処理
-		}
 	}
 		//方向ベクトルを強制的に長さ１にする
 		//正規化
@@ -133,10 +132,6 @@ void SideChara::Update()
 		float dot = nowDir.Dot(toDir);
 		//角度に変換
 		float angle = DirectX::XMConvertToDegrees(acos(dot));
-		KdDebugGUI::Instance().AddLog("m_angle : %f", m_angle);
-		KdDebugGUI::Instance().AddLog("angle : %f\n", angle);
-		KdDebugGUI::Instance().AddLog("nowDir : %f,%f,%f\n", nowDir.x, nowDir.y, nowDir.z);
-		KdDebugGUI::Instance().AddLog("toDir : %f,%f,%f\n", toDir.x, toDir.y, toDir.z);
 		if (angle >= 1.0f) {
 			if (angle > 5.0f) {
 				angle = 5.0f;
@@ -184,6 +179,70 @@ void SideChara::Update()
 void SideChara::PostUpdate()
 {
 
+	if (m_gameScene->GetNowChara() != GameScene::NowChara::Side) return;
+	Math::Matrix cameraRotMat;
+	if (m_wpCamera.expired() == false)
+	{
+		cameraRotMat = m_wpCamera.lock()->GetRotationYMatrix();
+	}
+
+	DirectX::BoundingOrientedBox blockBox;
+
+	blockBox.Center = m_pos;
+	blockBox.Extents = Math::Vector3(4.0f, 4.0f, 4.0f);
+	blockBox.Orientation =
+		Math::Quaternion::CreateFromRotationMatrix(cameraRotMat);
+
+	KdCollider::BoxInfo boxInfo(
+		KdCollider::TypeGround|KdCollider::TypeBump,
+		blockBox
+	);
+
+	DirectX::XMFLOAT3 corners[8];
+	blockBox.GetCorners(corners);
+
+	float blockBottomY = FLT_MAX;
+
+	for (const auto& corner : corners)
+	{
+		blockBottomY = std::min(blockBottomY, corner.y);
+	}
+
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		if (obj.get() == this)
+		{
+			continue;
+		}
+
+		bool hit = obj->Intersects(boxInfo, nullptr);
+
+		if (!hit)
+		{
+			continue;
+		}
+
+		float groundTopY = obj->GetPos().y + 7.98f;
+		float overlap = groundTopY - blockBottomY;
+
+		if (overlap > 0.0f)
+		{
+			m_pos.y += overlap;
+			m_gravity = 0.0f;
+		}
+		if (hit)
+		{
+			KdDebugGUI::Instance().AddLog("Player hit Ground\n");
+		}
+	}
+	//m_pDebugWire->AddDebugBox(Math::Matrix::CreateTranslation(blockBox.Center), blockBox.Extents, Math::Vector3::Zero, true, Math::Color(0, 1, 0, 1));
+
+	Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
+	Math::Matrix scaleMat = Math::Matrix::CreateScale(2.00f);
+	m_mWorld = scaleMat * rotMat * transMat;
+
+	/*
 	// 立方体の当たり判定を行う
 	// DirectX::BoundingOrientedBox を作成して BoxInfo のコンストラクタで初期化する
 	DirectX::BoundingOrientedBox obb;
@@ -261,6 +320,7 @@ void SideChara::PostUpdate()
 		Math::Color col = boxHit ? Math::Color(1, 0, 0, 1) : Math::Color(0, 1, 0, 1);
 		//m_pDebugWire->AddDebugBox(Math::Matrix::CreateTranslation(m_pos), Math::Vector3(0.5f, 1.0f, 0.5f), Math::Vector3::Zero, true, col);
 	}
+	*/
 	/*
 	KdCollider::SphereInfo sphere;
 

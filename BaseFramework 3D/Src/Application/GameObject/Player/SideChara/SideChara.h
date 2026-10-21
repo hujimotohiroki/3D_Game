@@ -21,10 +21,10 @@ private:
 	std::weak_ptr<CameraBase> m_wpCamera;
 
 	float m_angle = 0;
-	const float speed = 0.25f;
+	const float speed = 0.5f;
 	float m_gravity = 0;
 	float m_gravityacc = 0.009f;
 	bool m_jumpFlg = false;
-
+	
 	bool paperFlg = false;
 };

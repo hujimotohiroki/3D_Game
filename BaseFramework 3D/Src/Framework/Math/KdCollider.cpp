@@ -543,7 +543,7 @@ bool KdBoxCollision::Intersects(const DirectX::BoundingOrientedBox& target, cons
 	// 即結果を返す(HITしたかどうかだけが知れる)
 	return isHit;
 }
-bool KdBoxCollision::Intersects(const KdCollider::RayInfo& target, const Math::Matrix& world, KdCollider::CollisionResult* /*pRes*/)
+bool KdBoxCollision::Intersects(const KdCollider::RayInfo& target, const Math::Matrix& world, KdCollider::CollisionResult* pRes)
 {
 	if (!m_enable) { return false; }
 
@@ -556,6 +556,16 @@ bool KdBoxCollision::Intersects(const KdCollider::RayInfo& target, const Math::M
 	m_Abox.Transform(myAABBShape, world);
 	m_Obox.Transform(myOBBShape, world);
 	bool isHit = (!m_IsOriented) ? myAABBShape.Intersects(target.m_pos, target.m_dir, AABBdist) : myOBBShape.Intersects(target.m_pos, target.m_dir, AABBdist);
+	isHit &= (target.m_range >= AABBdist);
+
+	if (!pRes) { return isHit; }
+
+	if (isHit)
+	{
+		pRes->m_hitPos = target.m_pos + target.m_dir * AABBdist;
+		pRes->m_hitDir = target.m_dir * (-1);
+		pRes->m_overlapDistance = target.m_range - AABBdist;
+	}
 
 	// 即結果を返す(HITしたかどうかだけが知れる)
 	return isHit;

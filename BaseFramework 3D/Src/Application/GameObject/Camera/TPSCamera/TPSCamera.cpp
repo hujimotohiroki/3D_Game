@@ -6,7 +6,7 @@ void TPSCamera::Init()
 	CameraBase::Init();
 
 	// 注視点
-	m_mLocalPos = Math::Matrix::CreateTranslation(0.0f, 5.0f, -10.0f);
+	m_mLocalPos = Math::Matrix::CreateTranslation(0.0f, 5.0f, -30.0f);
 
 	m_mRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(90));
 

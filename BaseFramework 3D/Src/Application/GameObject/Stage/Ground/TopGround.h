@@ -13,4 +13,5 @@ public:
 private:
 	int m_stage;
 	int m_step;
+	DirectX::BoundingBox groundBox;
 };

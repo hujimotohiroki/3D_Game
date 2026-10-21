@@ -8,9 +8,20 @@ void SideBlock::Init()
 {
 	m_model = std::make_shared<KdModelData>();
 	m_model->Load("Asset/Models/Block/SideBlock.gltf");
+	blockBox.Center = m_pos;
+	blockBox.Extents = Math::Vector3(1.99f, 1.99f,1.99f);
+	blockBox.Orientation = Math::Quaternion::Identity;
+
 	m_pCollider = std::make_unique<KdCollider>();
-	m_pCollider->RegisterCollisionShape("BlockCollision", m_model, KdCollider::TypeBump);
+	m_pCollider->RegisterCollisionShape(
+		"BlockCollision",
+		blockBox,
+		KdCollider::TypeBump
+	);
+	//m_pCollider->RegisterCollisionShape("BlockCollision", m_model, KdCollider::TypeBump);
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+	RotMat = Math::Matrix::Identity; //Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(-90));
+	
 }
 
 void SideBlock::Update()
@@ -29,24 +40,215 @@ void SideBlock::Update()
 		SceneManager::Instance().AddObject(topblock);
 		return;
 	}*/
+	if(rollFlg!=0)
+	{
+		switch (rollFlg)
+		{
+		case 1:
+			m_pos.x -= 0.8f;
+			RotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(4.5f));
+			break;
+		case 2:
+			m_pos.z -= 0.8f;
+			RotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(-4.5f));
+			break;
+		case 3:
+			m_pos.x += 0.8f;
+			RotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(-4.5f));
+			break;
+		case 4:
+			m_pos.z += 0.8f;
+			RotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(4.5f));
+			break;
+		case -1:
+			m_pos.x += 0.8f;
+			RotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(-4.5f));
+			break;
+		case -2:
+			m_pos.z += 0.8f;
+			RotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(4.5f));
+			break;
+		case -3:
+			m_pos.x -= 0.8f;
+			RotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(4.5f));
+			break;
+		case -4:
+			m_pos.z -= 0.8f;
+			RotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(-4.5f));
+			break;
+		}
+		rollCount+=rollFlg/abs(rollFlg);
+		if (rollCount == 20|| rollCount == 0) {
+			rollFlg = 0;
+			rollCount = 0;
+		}
+		
+		KdCollider::RayInfo ray;
 
-	m_mWorld = Math::Matrix::CreateScale(4)*Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(-90)) * Math::Matrix::CreateTranslation(m_pos);
+		ray.m_pos = m_pos;
+		static const float enableStepHigh = 0.3f;
+		static const float m_adjustHeight = 4.0f;
+		ray.m_pos.y += enableStepHigh;
+		ray.m_pos.y -= m_adjustHeight;
+		ray.m_dir = Math::Vector3(0, 1, 0);
+		ray.m_range = 12.0f;
+
+		//当たり判定をしたいタイプを設定
+		ray.m_type = KdCollider::TypeGround;
+
+		//デバッグ用
+		//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
+
+		//レイに当たったオブジェクト情報を格納するリスト
+		std::list<KdCollider::CollisionResult> retRayList;
+		for (auto& obj : SceneManager::Instance().GetObjList()) {
+			if (obj.get() == this)
+			{
+				continue;
+			}
+			obj->Intersects(ray, &retRayList);
+
+		}
+
+		for (auto& ret : retRayList)
+		{
+			rollFlg *= -1;
+		}
+	}
+	KdDebugGUI::Instance().AddLog("%d\n", rollFlg);
+	
+	m_mWorld = Math::Matrix::CreateScale(4)*RotMat* Math::Matrix::CreateTranslation(m_pos);
 }
 
 void SideBlock::PostUpdate()
 {
-	KdCollider::RayInfo ray;
+	blockBox.Center = m_pos;
+	blockBox.Extents = m_collisionHalfSize;
+	blockBox.Orientation =
+		Math::Quaternion::CreateFromRotationMatrix(RotMat);
+	
+	
+	KdCollider::BoxInfo boxInfo(
+		KdCollider::TypeGround|KdCollider::TypeBump,
+		blockBox
+	);
+	
+	std::list<KdCollider::CollisionResult> results;
 
-	ray.m_pos = m_pos;
-	static const float enableStepHigh = 0.3f;
+	DirectX::XMFLOAT3 corners[8];
+	blockBox.GetCorners(corners);
+
+	float blockBottomY = FLT_MAX;
+
+	for (const auto& corner : corners)
+	{
+		blockBottomY = std::min(blockBottomY, corner.y);
+	}
+	int tmp = 0;
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		if (obj.get() == this)
+		{
+			tmp++;
+			KdDebugGUI::Instance().AddLog("%d\n", tmp);
+			continue;
+		}
+
+		bool hit = obj->Intersects(boxInfo, nullptr);
+
+		if (!hit)
+		{
+			continue;
+		}
+
+		float groundTopY = obj->GetPos().y + 7.98f;
+		float overlap = groundTopY - blockBottomY;
+
+		if (overlap > 0.0f)
+		{
+			m_pos.y += overlap;
+			m_gravity = 0.0f;
+		}
+	}
+	m_mWorld =
+		Math::Matrix::CreateScale(4) *
+		RotMat *
+		Math::Matrix::CreateTranslation(m_pos);
+	/*KdCollider::RayInfo ray1, ray2;
+
+	ray1.m_pos = m_pos;
+	ray1.m_pos += Math::Vector3::TransformNormal(Math::Vector3(8, 0, 0), RotMat);
+	static const float enableStepHigh = 1.0f;
 	static const float m_adjustHeight = 8.0f;
-	ray.m_pos.y += enableStepHigh;
-	ray.m_pos.y -= m_adjustHeight;
-	ray.m_dir = Math::Vector3(0, -1, 0);
-	ray.m_range = 12.0f;
+	ray1.m_pos.y += enableStepHigh;
+	//ray1.m_pos.y -= m_adjustHeight;
+	ray1.m_dir = Math::Vector3(0, -1, 0);
+	ray1.m_range = 12.0f;
 
 	//当たり判定をしたいタイプを設定
-	ray.m_type = KdCollider::TypeGround;
+	ray1.m_type = KdCollider::TypeGround;
+
+	//デバッグ用
+	m_pDebugWire->AddDebugLine(ray1.m_pos, ray1.m_dir, ray1.m_range, Math::Color(1, 0, 0, 1));
+
+	//球に当たったオブジェクト情報を格納するリスト
+	std::list<KdCollider::CollisionResult> retRayList;
+	for (auto& obj : SceneManager::Instance().GetObjList()) {
+		obj->Intersects(ray1, &retRayList);
+	}
+
+	// レイに当たったリストから一番近いオブジェクトを検出
+	bool hit = false;
+	float maxOverLap = 0;
+	Math::Vector3 groundPos = {};	// レイが遮断された(Hitした)座標
+
+	for (auto& ret : retRayList)
+	{
+		// レイが当たったオブジェクトの中から
+		// 「m_overlapDistance = 貫通した長さ」が一番長いものを探す
+		// 「m_overlapDistance が一番長い = 一番近くで当たった」と判定できる
+		if (maxOverLap < ret.m_overlapDistance)
+		{
+			maxOverLap = ret.m_overlapDistance;
+			groundPos = ret.m_hitPos;
+			Math::Vector3 adjustPos=Math::Vector3::TransformNormal(Math::Vector3(8, 0, 0), RotMat);
+			adjustPos.y = 0;
+			groundPos -= adjustPos;
+			hit = true;
+		}
+	}
+
+	// 当たっていたら
+	if (hit)
+	{
+		KdDebugGUI::Instance().AddLog("%f\n", maxOverLap);
+		m_pos = groundPos;	// レイの着弾地点に着地
+		m_pos.y += m_adjustHeight+;	// 地面から補正値分上げる
+		m_gravity = 0.0f;
+	}
+	ray2.m_pos = m_pos;
+	ray2.m_pos += Math::Vector3::TransformNormal(Math::Vector3(8, 0, 0), RotMat);
+	//ray2.m_pos.y += enableStepHigh;
+	//ray2.m_pos.y -= m_adjustHeight;
+	ray2.m_dir = Math::Vector3(0, -1, 0);
+	ray2.m_range = 12.0f;
+
+	//当たり判定をしたいタイプを設定
+	ray2.m_type = KdCollider::TypeGround;
+	*/
+	//デバッグ用
+	//m_pDebugWire->AddDebugLine(ray2.m_pos, ray2.m_dir, ray2.m_range, Math::Color(1, 0, 0, 1));
+	/*
+	ray2.m_pos = m_pos;
+	static const float enableStepHigh = 0.3f;
+	static const float m_adjustHeight = 8.0f;
+	ray2.m_pos.y += enableStepHigh;
+	ray2.m_pos.y -= m_adjustHeight;
+	ray2.m_dir = Math::Vector3(0, -1, 0);
+	ray2.m_range = 12.0f;
+
+	//当たり判定をしたいタイプを設定
+	ray2.m_type = KdCollider::TypeGround;
 
 	//デバッグ用
 	//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
@@ -54,7 +256,7 @@ void SideBlock::PostUpdate()
 	//球に当たったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& obj : SceneManager::Instance().GetObjList()) {
-		obj->Intersects(ray, &retRayList);
+		obj->Intersects(ray2, &retRayList);
 	}
 
 	// レイに当たったリストから一番近いオブジェクトを検出
@@ -82,7 +284,7 @@ void SideBlock::PostUpdate()
 		m_pos.y += m_adjustHeight;	// 地面から補正値分上げる
 		m_gravity = 0.0f;
 	}
-
+	*/
 	/*
 	// 立方体の当たり判定を行う
 	// DirectX::BoundingOrientedBox を作成して BoxInfo のコンストラクタで初期化する
@@ -91,6 +293,7 @@ void SideBlock::PostUpdate()
 	obb.Extents = Math::Vector3(8.0f, 8.0f, 8.0f);
 	// 地面判定対象（TypeGround）と衝突して重ならないようにする
 	KdCollider::BoxInfo box(KdCollider::TypeGround|KdCollider::TypeBump, obb);
+
 
 	// デバッグ可視化: ボックス描画はヒット判定後に色を変えて描画する
 
@@ -224,9 +427,7 @@ void SideBlock::PushBlock(int Flg)
 
 	ray.m_pos = m_pos;
 	static const float enableStepHigh = 0.3f;
-	static const float m_adjustHeight = 8.0f;
 	ray.m_pos.y += enableStepHigh;
-	ray.m_pos.y += m_adjustHeight;
 	switch (Flg)
 	{
 	case 0:
@@ -248,32 +449,23 @@ void SideBlock::PushBlock(int Flg)
 	ray.m_type = KdCollider::TypeGround|KdCollider::TypeBump;
 
 	//デバッグ用
-	m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
+	//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, Math::Color(1, 0, 0, 1));
 
-	//球に当たったオブジェクト情報を格納するリスト
+	//レイに当たったオブジェクト情報を格納するリスト
 	std::list<KdCollider::CollisionResult> retRayList;
 	for (auto& obj : SceneManager::Instance().GetObjList()) {
+		if (obj.get() == this)
+		{
+			continue;
+		}
 		obj->Intersects(ray, &retRayList);
 	}
-
+	KdDebugGUI::Instance().AddLog("%d\n",retRayList.size());
 	// 当たっていなかったら
-	if (retRayList.empty())
+	if (retRayList.empty()&&rollFlg==0)
 	{
-		switch (Flg)
-		{
-		case 0:
-			m_pos.x -= 16.0f;
-			break;
-		case 1:
-			m_pos.z -= 16.0f;
-			break;
-		case 2:
-			m_pos.x += 16.0f;
-			break;
-		case 3:
-			m_pos.z += 16.0f;
-			break;
-		}
+		rollFlg = Flg+1;
+		rollCount = 0;
 	}
 	
 }

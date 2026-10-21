@@ -15,4 +15,9 @@ private:
 	std::weak_ptr<KdGameObject> m_wpTarget;
 	float m_gravity = 0;
 	float m_gravityacc = 0.05f;
+	Math::Matrix RotMat = Math::Matrix::Identity;
+	DirectX::BoundingOrientedBox blockBox;
+	Math::Vector3 m_collisionHalfSize = Math::Vector3(8.0f, 8.0f, 8.0f);
+	int rollFlg = 0;
+	int rollCount = 0;
 };
