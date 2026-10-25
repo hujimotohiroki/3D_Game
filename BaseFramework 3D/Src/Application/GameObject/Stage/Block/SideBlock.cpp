@@ -115,7 +115,7 @@ void SideBlock::Update()
 			rollFlg *= -1;
 		}
 	}
-	KdDebugGUI::Instance().AddLog("%d\n", rollFlg);
+	//KdDebugGUI::Instance().AddLog("%d\n", rollFlg);
 	
 	m_mWorld = Math::Matrix::CreateScale(4)*RotMat* Math::Matrix::CreateTranslation(m_pos);
 }
@@ -134,7 +134,35 @@ void SideBlock::PostUpdate()
 	);
 	
 	std::list<KdCollider::CollisionResult> results;
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		if (obj.get() == this) continue;
+		 obj->Intersects(boxInfo, &results);
+	}
+	float maxOverlap = 0.0f;
+	Math::Vector3 pushDirection = Math::Vector3::Zero;
 
+	for (const auto& result : results)
+	{
+		if (result.m_overlapDistance > maxOverlap)
+		{
+			maxOverlap = result.m_overlapDistance;
+			pushDirection = result.m_hitDir;
+			//KdDebugGUI::Instance().AddLog("%f\n", maxOverlap);
+		}
+	}
+
+	if (maxOverlap > 0.0f)
+	{
+		m_pos += pushDirection * maxOverlap;
+		m_gravity = 0.0f;
+
+		m_mWorld =
+			Math::Matrix::CreateScale(4.0f) *
+			RotMat *
+			Math::Matrix::CreateTranslation(m_pos);
+	}
+	/*
 	DirectX::XMFLOAT3 corners[8];
 	blockBox.GetCorners(corners);
 
@@ -173,7 +201,7 @@ void SideBlock::PostUpdate()
 	m_mWorld =
 		Math::Matrix::CreateScale(4) *
 		RotMat *
-		Math::Matrix::CreateTranslation(m_pos);
+		Math::Matrix::CreateTranslation(m_pos);*/
 	/*KdCollider::RayInfo ray1, ray2;
 
 	ray1.m_pos = m_pos;
@@ -460,7 +488,7 @@ void SideBlock::PushBlock(int Flg)
 		}
 		obj->Intersects(ray, &retRayList);
 	}
-	KdDebugGUI::Instance().AddLog("%d\n",retRayList.size());
+	//KdDebugGUI::Instance().AddLog("%d\n",retRayList.size());
 	// 当たっていなかったら
 	if (retRayList.empty()&&rollFlg==0)
 	{
@@ -469,3 +497,6 @@ void SideBlock::PushBlock(int Flg)
 	}
 	
 }
+//縦移動距離と横移動距離の合計が常に一致するからそれでうまいこと行けないか？
+//Boxの最下点からレイを飛ばして、当らなかったらその高さに合わせる。で、横移動はそのまま。
+//当たったら一個上のマスから飛ばす

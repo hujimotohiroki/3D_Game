@@ -83,11 +83,11 @@ void TopChara::Update()
 	}
 		//簡単にオブジェクトの向きを取得する方法
 		Math::Vector3 nowDir = m_mWorld.Backward();
-		KdDebugGUI::Instance().AddLog("nowDir : x:%f y:%f z:%f\n", nowDir.x, nowDir.y, nowDir.z);
+		//KdDebugGUI::Instance().AddLog("nowDir : x:%f y:%f z:%f\n", nowDir.x, nowDir.y, nowDir.z);
 		nowDir.Normalize();
 		//向きたい方向
 		
-		KdDebugGUI::Instance().AddLog("toDir : x:%f y:%f z:%f\n", toDir.x, toDir.y, toDir.z);
+		//KdDebugGUI::Instance().AddLog("toDir : x:%f y:%f z:%f\n", toDir.x, toDir.y, toDir.z);
 		// 内積とは＝ベクトルA×ベクトルB×cos(なす角)
 		float dot = nowDir.Dot(toDir);
 		//角度に変換
@@ -112,7 +112,7 @@ void TopChara::Update()
 				}
 			}
 		}
-	KdDebugGUI::Instance().AddLog("angle : %f\n", m_angle);
+	//KdDebugGUI::Instance().AddLog("angle : %f\n", m_angle);
 	//Math::Matrix rotMatZ = Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(m_angle));
 	//m_pos.z = 0;
 	//m_pos.z = -20.5f;

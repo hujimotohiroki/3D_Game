@@ -11,4 +11,5 @@ protected:
 	std::shared_ptr<KdModelData> m_model;
 	GameScene* m_gameScene = nullptr;
 	Math::Vector3 m_pos = Math::Vector3::Zero;
+
 };

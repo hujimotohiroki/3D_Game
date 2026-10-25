@@ -9,7 +9,6 @@
 #include "../../GameObject/Player/SideChara/SideChara.h"
 #include "../../GameObject/Player/TopChara/TopChara.h"
 
-
 void GameScene::Event()
 {
 	if (GetAsyncKeyState('Q') & 0x8000)
@@ -19,7 +18,7 @@ void GameScene::Event()
 			SceneManager::SceneType::StageSelect
 		);
 	}
-	if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+	/*if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
 	{
 		if(!shiftFlg)
 		{
@@ -33,15 +32,15 @@ void GameScene::Event()
 	else
 	{
 		shiftFlg = false;
-	}
+	}*/
 	if (NextStageFlg)
 	{
 		m_nowStage++;
 		m_objList.clear();
-		Tcamera = std::make_shared<TPSCamera>();
-		Tcamera->Init();
-		Tcamera->Setm_spCamera(true);
-		m_objList.push_back(Tcamera);
+		Fcamera = std::make_shared<FPSCamera>();
+		Fcamera->Init();
+		Fcamera->Setm_spCamera(true);
+		m_objList.push_back(Fcamera);
 
 		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
 		stage->SetStage(m_nowStage);
@@ -52,11 +51,11 @@ void GameScene::Event()
 		side = std::make_shared<SideChara>();
 		side->Init();
 		side->SetGameScene(this);
-		side->SetPos(Math::Vector3(-20.0f, 10.0f, 0.0f));
+		side->SetPos(Math::Vector3(-32.0f, 10.0f, -32.0f));
 		m_objList.push_back(side);
 
-		Tcamera->SetTarget(side);
-		side->SetTarget(Tcamera);
+		Fcamera->SetTarget(side);
+		side->SetTarget(Fcamera);
 
 		top = std::make_shared<TopChara>();
 		top->Init();
@@ -67,15 +66,15 @@ void GameScene::Event()
 		std::shared_ptr<TV> tv = std::make_shared<TV>();
 		tv->Init();
 		tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
-		m_objList.push_back(tv);
+		//m_objList.push_back(tv);
 
 		std::shared_ptr<REC> rec = std::make_shared<REC>();
 		rec->Init();
-		m_objList.push_back(rec);
+		//m_objList.push_back(rec);
 
 		std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 		controller->Init();
-		m_objList.push_back(controller);
+		//m_objList.push_back(controller);
 
 		shiftFlg = false;
 		NextStageFlg = false;
@@ -84,10 +83,10 @@ void GameScene::Event()
 	{
 		m_objList.clear();
 	
-		Tcamera = std::make_shared<TPSCamera>();
-		Tcamera->Init();
-		Tcamera->Setm_spCamera(true);
-		m_objList.push_back(Tcamera);
+		Fcamera = std::make_shared<FPSCamera>();
+		Fcamera->Init();
+		Fcamera->Setm_spCamera(true);
+		m_objList.push_back(Fcamera);
 
 		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
 		stage->SetStage(m_nowStage);
@@ -98,11 +97,11 @@ void GameScene::Event()
 		side = std::make_shared<SideChara>();
 		side->Init();
 		side->SetGameScene(this);
-		side->SetPos(Math::Vector3(-20.0f, 10.0f, 0.0f));
+		side->SetPos(Math::Vector3(-32.0f, 10.0f, -32.0f));
 		m_objList.push_back(side);
 
-		Tcamera->SetTarget(side);
-		side->SetTarget(Tcamera);
+		Fcamera->SetTarget(side);
+		side->SetTarget(Fcamera);
 
 		top = std::make_shared<TopChara>();
 		top->Init();
@@ -114,15 +113,15 @@ void GameScene::Event()
 		std::shared_ptr<TV> tv = std::make_shared<TV>();
 		tv->Init();
 		tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
-		m_objList.push_back(tv);
+		//m_objList.push_back(tv);
 
 		std::shared_ptr<REC> rec = std::make_shared<REC>();
 		rec->Init();
-		m_objList.push_back(rec);
+		//m_objList.push_back(rec);
 
 		std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 		controller->Init();
-		m_objList.push_back(controller);
+		//m_objList.push_back(controller);
 
 		shiftFlg = false;
 		ResetFlg = false;
@@ -131,19 +130,19 @@ void GameScene::Event()
 
 void GameScene::Init()
 {
-	Tcamera = std::make_shared<TPSCamera>();
-	Tcamera->Init();
-	Tcamera->Setm_spCamera(true);
-	m_objList.push_back(Tcamera);
+	Fcamera = std::make_shared<FPSCamera>();
+	Fcamera->Init();
+	Fcamera->Setm_spCamera(true);
+	m_objList.push_back(Fcamera);
 
 	side = std::make_shared<SideChara>();
 	side->Init();
 	side->SetGameScene(this);
-	side->SetPos(Math::Vector3(- 20.0f, 10.0f, 0.0f));
+	side->SetPos(Math::Vector3(- 32.0f, 10.0f, -32.0f));
 	m_objList.push_back(side);
 
-	Tcamera->SetTarget(side);
-	side->SetTarget(Tcamera);
+	Fcamera->SetTarget(side);
+	side->SetTarget(Fcamera);
 	
 	top = std::make_shared<TopChara>();
 	top->Init();

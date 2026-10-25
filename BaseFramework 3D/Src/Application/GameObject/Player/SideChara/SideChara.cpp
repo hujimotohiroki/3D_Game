@@ -3,6 +3,7 @@
 #include "../../../Scene/SceneManager.h"
 #include "../../Camera/FPSCamera/FPSCamera.h"
 #include "../../Stage/Block/SideBlock.h"
+#include "../../Stage/Block/SideBlock2.h"
 void SideChara::Init()
 {
 	m_model = std::make_shared<KdModelWork>();
@@ -28,7 +29,7 @@ void SideChara::Update()
 	Math::Matrix cameraRotMat;
 	if (m_wpCamera.expired() == false)
 	{
-		cameraRotMat = m_wpCamera.lock()->GetRotationYMatrix();
+		cameraRotMat = m_wpCamera.lock()->GetRotationMatrix();
 	}
 	bool moveFlg = false;
 	m_dir.x = 0;
@@ -62,7 +63,7 @@ void SideChara::Update()
 		ray.m_pos = m_pos;
 		ray.m_pos.y += 8.0f;
 		ray.m_dir = cameraRotMat.Backward();
-		ray.m_range = 10.0f;
+		ray.m_range = 40.0f;
 
 		//当たり判定をしたいタイプを設定
 		ray.m_type = KdCollider::TypeBump;
@@ -107,13 +108,31 @@ void SideChara::Update()
 				}
 				pSideBlock->PushBlock(dirFlg);
 			}
+			SideBlock2* pSideBlock2 = dynamic_cast<SideBlock2*>(hitObj.get());
+			if (pSideBlock2)
+			{
+				Math::Vector3 p_pos = pSideBlock2->GetPos();
+				int dirFlg;
+				if (abs(groundPos.x - p_pos.x) > abs(groundPos.z - p_pos.z)) {
+					if (groundPos.x > p_pos.x) dirFlg = 0;
+					else dirFlg = 2;
+				}
+				else {
+					if (groundPos.z > p_pos.z) dirFlg = 1;
+					else dirFlg = 3;
+				}
+				pSideBlock2->PushBlock(dirFlg);
+			}
 		}
 		// デバッグ表示（ヒットしたら赤、していなければ緑）
 		bool hit = (hitObj != nullptr);
 		Math::Color col = hit ? Math::Color(1, 0, 0, 1) : Math::Color(0, 1, 0, 1);
-		m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, col);
+		//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, col);
 	}
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+		if (m_gravity == 0) {
+			m_gravity = -0.5f;
+		}
 	}
 		//方向ベクトルを強制的に長さ１にする
 		//正規化
@@ -153,7 +172,7 @@ void SideChara::Update()
 
 		}
 	}
-		
+	m_dir.y = 0;
 		Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
 	m_pos += m_dir * speed;
 	m_gravity += m_gravityacc;
@@ -186,6 +205,50 @@ void SideChara::PostUpdate()
 		cameraRotMat = m_wpCamera.lock()->GetRotationYMatrix();
 	}
 
+	DirectX::BoundingOrientedBox blockBox;
+
+	blockBox.Center = m_pos;
+	blockBox.Extents = Math::Vector3(4.0f, 4.0f, 4.0f);
+	blockBox.Orientation =
+		Math::Quaternion::CreateFromRotationMatrix(cameraRotMat);
+
+
+	KdCollider::BoxInfo boxInfo(
+		KdCollider::TypeGround | KdCollider::TypeBump,
+		blockBox
+	);
+
+	std::list<KdCollider::CollisionResult> results;
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		if (obj.get() == this) continue;
+		obj->Intersects(boxInfo, &results);
+	}
+	float maxOverlap = 0.0f;
+	Math::Vector3 pushDirection = Math::Vector3::Zero;
+
+	for (const auto& result : results)
+	{
+		if (result.m_overlapDistance > maxOverlap)
+		{
+			maxOverlap = result.m_overlapDistance;
+			pushDirection = result.m_hitDir;
+			//KdDebugGUI::Instance().AddLog("%f\n", maxOverlap);
+		}
+	}
+
+	if (maxOverlap > 0.0f)
+	{
+		m_pos += pushDirection * maxOverlap;
+		m_gravity = 0.0f;
+
+		Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+		Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
+		Math::Matrix scaleMat = Math::Matrix::CreateScale(2.00f);
+
+		m_mWorld = scaleMat * rotMat * transMat;
+	}
+	/*
 	DirectX::BoundingOrientedBox blockBox;
 
 	blockBox.Center = m_pos;
@@ -240,7 +303,7 @@ void SideChara::PostUpdate()
 	Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
 	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
 	Math::Matrix scaleMat = Math::Matrix::CreateScale(2.00f);
-	m_mWorld = scaleMat * rotMat * transMat;
+	m_mWorld = scaleMat * rotMat * transMat;*/
 
 	/*
 	// 立方体の当たり判定を行う

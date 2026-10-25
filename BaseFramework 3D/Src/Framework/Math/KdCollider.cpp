@@ -4,6 +4,36 @@
 // KdCollider
 // ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
 
+namespace
+{
+	void GetOBBAxes(
+		const DirectX::BoundingOrientedBox& box,
+		Math::Vector3 axes[3])
+	{
+		Math::Matrix rotation =
+			Math::Matrix::CreateFromQuaternion(box.Orientation);
+
+		axes[0] = rotation.Right();
+		axes[1] = rotation.Up();
+		axes[2] = rotation.Backward();
+
+		axes[0].Normalize();
+		axes[1].Normalize();
+		axes[2].Normalize();
+	}
+
+	float ProjectOBB(
+		const DirectX::BoundingOrientedBox& box,
+		const Math::Vector3 axes[3],
+		const Math::Vector3& axis)
+	{
+		return
+			box.Extents.x * abs(axes[0].Dot(axis)) +
+			box.Extents.y * abs(axes[1].Dot(axis)) +
+			box.Extents.z * abs(axes[2].Dot(axis));
+	}
+}
+
 ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // 当たり判定形状の登録関数群
 ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
@@ -528,22 +558,135 @@ bool KdBoxCollision::Intersects(const DirectX::BoundingBox& target, const Math::
 // 判定回数は 1 回　計算自体も軽く最も軽量な当たり判定　計算回数も固定なので処理効率は安定
 // 片方の球の判定を0にすれば単純な距離判定も作れる
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
-bool KdBoxCollision::Intersects(const DirectX::BoundingOrientedBox& target, const Math::Matrix& world, KdCollider::CollisionResult* /*pRes*/)
+bool KdBoxCollision::Intersects(
+	const DirectX::BoundingOrientedBox& target,
+	const Math::Matrix& world,
+	KdCollider::CollisionResult* pRes)
 {
-	if (!m_enable) { return false; }
+	if (!m_enable)
+	{
+		return false;
+	}
 
-	// BOXvsBOX(OBB)の当たり判定
-	DirectX::BoundingBox			myAABBShape;
-	DirectX::BoundingOrientedBox	myOBBShape;
-	m_Abox.Transform(myAABBShape, world);
-	m_Obox.Transform(myOBBShape, world);
+	DirectX::BoundingBox worldAABB;
+	DirectX::BoundingOrientedBox worldOBB;
 
-	bool isHit = (!m_IsOriented) ? myAABBShape.Intersects(target) : myOBBShape.Intersects(target);
+	m_Abox.Transform(worldAABB, world);
+	m_Obox.Transform(worldOBB, world);
 
-	// 即結果を返す(HITしたかどうかだけが知れる)
-	return isHit;
-}
-bool KdBoxCollision::Intersects(const KdCollider::RayInfo& target, const Math::Matrix& world, KdCollider::CollisionResult* pRes)
+	DirectX::BoundingOrientedBox receiverBox;
+
+	if (m_IsOriented)
+	{
+		receiverBox = worldOBB;
+	}
+	else
+	{
+		receiverBox.Center = worldAABB.Center;
+		receiverBox.Extents = worldAABB.Extents;
+		receiverBox.Orientation = DirectX::XMFLOAT4(0, 0, 0, 1);
+	}
+
+	DirectX::BoundingOrientedBox targetBox = target;
+
+	Math::Vector3 receiverAxes[3];
+	Math::Vector3 targetAxes[3];
+
+	GetOBBAxes(receiverBox, receiverAxes);
+	GetOBBAxes(targetBox, targetAxes);
+
+	Math::Vector3 axes[15];
+
+	int axisCount = 0;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		axes[axisCount++] = receiverAxes[i];
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		axes[axisCount++] = targetAxes[i];
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			Math::Vector3 axis =
+				receiverAxes[i].Cross(targetAxes[j]);
+
+			if (axis.LengthSquared() < 0.000001f)
+			{
+				continue;
+			}
+
+			axis.Normalize();
+			axes[axisCount++] = axis;
+		}
+	}
+
+	float minimumOverlap = FLT_MAX;
+	Math::Vector3 minimumAxis = Math::Vector3::Zero;
+
+	Math::Vector3 centerDirection =
+		Math::Vector3(targetBox.Center) -
+		Math::Vector3(receiverBox.Center);
+
+	for (int i = 0; i < axisCount; ++i)
+	{
+		Math::Vector3 axis = axes[i];
+
+		float receiverRadius =
+			ProjectOBB(receiverBox, receiverAxes, axis);
+
+		float targetRadius =
+			ProjectOBB(targetBox, targetAxes, axis);
+
+		float centerDistance =
+			abs(centerDirection.Dot(axis));
+
+		float overlap =
+			receiverRadius +
+			targetRadius -
+			centerDistance;
+
+		// この軸で分離している
+		if (overlap <= 0.0f)
+		{
+			return false;
+		}
+
+		if (overlap < minimumOverlap)
+		{
+			minimumOverlap = overlap;
+			minimumAxis = axis;
+		}
+	}
+
+	if (!pRes)
+	{
+		return true;
+	}
+
+	// 押し戻し方向をreceiverからtargetへ向くように統一する
+	if (centerDirection.Dot(minimumAxis) < 0.0f)
+	{
+		minimumAxis *= -1.0f;
+	}
+
+	pRes->m_hitDir = minimumAxis;
+	pRes->m_overlapDistance = minimumOverlap;
+
+	// 厳密な接触点ではなく、押し戻しに使用する代表点
+	pRes->m_hitPos =
+		Math::Vector3(targetBox.Center) -
+		minimumAxis * (minimumOverlap * 0.5f);
+
+	pRes->m_hitNDir = minimumAxis;
+
+	return true;
+}bool KdBoxCollision::Intersects(const KdCollider::RayInfo& target, const Math::Matrix& world, KdCollider::CollisionResult* pRes)
 {
 	if (!m_enable) { return false; }
 

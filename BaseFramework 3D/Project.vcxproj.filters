@@ -124,6 +124,9 @@
     <Filter Include="Src\Application\GameObject\Title">
       <UniqueIdentifier>{e38b59d3-d9d9-4e5e-959e-094b00cd4112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\GameObject\Stage\gimmick">
+      <UniqueIdentifier>{7224239c-eb97-4da3-8567-69616b75626a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -366,6 +369,18 @@
     <ClInclude Include="Src\Application\GameObject\TV\Controller.h">
       <Filter>Src\Application\GameObject\TV</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Gimmick\goal.h">
+      <Filter>Src\Application\GameObject\Stage\gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Title\Stage Clear.h">
+      <Filter>Src\Application\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Block\SideBlock2.h">
+      <Filter>Src\Application\GameObject\Stage\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\GameObject\Stage\Ground\Wall.h">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -577,6 +592,18 @@
     </ClCompile>
     <ClCompile Include="Src\Application\GameObject\TV\Controller.cpp">
       <Filter>Src\Application\GameObject\TV</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Gimmick\goal.cpp">
+      <Filter>Src\Application\GameObject\Stage\gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Title\Stage Clear.cpp">
+      <Filter>Src\Application\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Block\SideBlock2.cpp">
+      <Filter>Src\Application\GameObject\Stage\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\GameObject\Stage\Ground\Wall.cpp">
+      <Filter>Src\Application\GameObject\Stage\Ground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

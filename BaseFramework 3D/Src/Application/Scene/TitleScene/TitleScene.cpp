@@ -33,7 +33,7 @@ void TitleScene::Init()
 	std::shared_ptr<TV> tv = std::make_shared<TV>();
 	tv->Init();
 	tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
-	m_objList.push_back(tv);
+	//m_objList.push_back(tv);
 
 	std::shared_ptr<Title> title = std::make_shared<Title>();
 	title->Init();
@@ -45,9 +45,9 @@ void TitleScene::Init()
 
 	std::shared_ptr<REC> rec = std::make_shared<REC>();
 	rec->Init();
-	m_objList.push_back(rec);
+	//m_objList.push_back(rec);
 
 	std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 	controller->Init();
-	m_objList.push_back(controller);
+	//m_objList.push_back(controller);
 }

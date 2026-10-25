@@ -46,9 +46,13 @@ void StageSelectScene::Init()
 	std::shared_ptr<TV> tv = std::make_shared<TV>();
 	tv->Init();
 	tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
-	m_objList.push_back(tv);
-
+	//m_objList.push_back(tv);
+	
 	std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 	controller->Init();
-	m_objList.push_back(controller);
+	//m_objList.push_back(controller);
+	SceneManager::Instance().SetNextScene
+	(
+		SceneManager::SceneType::Game
+	);
 }
