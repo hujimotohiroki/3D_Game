@@ -286,6 +286,7 @@
     <ClInclude Include="Src\Application\GameObject\Stage\Block\TopBlock.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Gimmick\goal.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\MidGround.h" />
+    <ClInclude Include="Src\Application\GameObject\Stage\Ground\Scaffold.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\SideGround.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\TopGround.h" />
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Wall.h" />
@@ -365,6 +366,7 @@
     <ClCompile Include="Src\Application\GameObject\Stage\Block\TopBlock.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Gimmick\goal.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\MidGround.cpp" />
+    <ClCompile Include="Src\Application\GameObject\Stage\Ground\Scaffold.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\SideGround.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\TopGround.cpp" />
     <ClCompile Include="Src\Application\GameObject\Stage\Ground\Wall.cpp" />

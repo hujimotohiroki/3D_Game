@@ -8,10 +8,10 @@ void SideChara::Init()
 {
 	m_model = std::make_shared<KdModelWork>();
 	//m_model->SetModelData("Asset/Models/Human/low_poly_humans.gltf");
-	m_model->SetModelData("Asset/Models/Human/tmp.gltf");
-	/*m_spAnimator = std::make_shared<KdAnimator>();
-	m_spAnimator->SetAnimation(m_model->GetAnimation("Walk"));
-	m_spAnimator2 = std::make_shared<KdAnimator>();
+	m_model->SetModelData("Asset/Models/Human/wand.gltf");
+	//m_spAnimator = std::make_shared<KdAnimator>();
+	//m_spAnimator->SetAnimation(m_model->GetAnimation("Swing"));
+	/*m_spAnimator2 = std::make_shared<KdAnimator>();
 	m_spAnimator2->SetAnimation(m_model->GetAnimation("Stop"));*/
 	m_pCollider = std::make_unique<KdCollider>();
 	// プレイヤーがブロックのBox/球いずれの判定にも反応するように
@@ -58,77 +58,91 @@ void SideChara::Update()
 	//Eキーを押したらレイをとばしてそれがブロックに当たった場合ブロックを押す処理が発生する
 	if (GetAsyncKeyState('E') & 0x8000)
 	{
-		KdCollider::RayInfo ray;
+		if (ETimer == 0)
+		{
+			KdCollider::RayInfo ray;
 
-		ray.m_pos = m_pos;
-		ray.m_pos.y += 8.0f;
-		ray.m_dir = cameraRotMat.Backward();
-		ray.m_range = 40.0f;
+			ray.m_pos = m_pos;
+			ray.m_pos.y += 8.0f;
+			ray.m_dir = cameraRotMat.Backward();
+			ray.m_range = 40.0f;
 
-		//当たり判定をしたいタイプを設定
-		ray.m_type = KdCollider::TypeBump;
+			//当たり判定をしたいタイプを設定
+			ray.m_type = KdCollider::TypeBump;
 
-		// 各オブジェクトごとに当たり判定を行い、ヒットした中で一番近いオブジェクトを探す
-		float maxOverLap = 0.0f;
-		Math::Vector3 groundPos = {};    // レイが遮断された(Hitした)座標
-		std::shared_ptr<KdGameObject> hitObj = nullptr;    // ヒットしたオブジェクト（最も近いもの）
+			// 各オブジェクトごとに当たり判定を行い、ヒットした中で一番近いオブジェクトを探す
+			float maxOverLap = 0.0f;
+			Math::Vector3 groundPos = {};    // レイが遮断された(Hitした)座標
+			std::shared_ptr<KdGameObject> hitObj = nullptr;    // ヒットしたオブジェクト（最も近いもの）
 
-		for (auto& obj : SceneManager::Instance().GetObjList()) {
-			if (obj.get() == this)
-			{
-				continue;
-			}
+			for (auto& obj : SceneManager::Instance().GetObjList()) {
+				if (obj.get() == this)
+				{
+					continue;
+				}
 
-			// オブジェクトごとに結果リストを作る
-			std::list<KdCollider::CollisionResult> tmpResults;
-			obj->Intersects(ray, &tmpResults);
+				// オブジェクトごとに結果リストを作る
+				std::list<KdCollider::CollisionResult> tmpResults;
+				obj->Intersects(ray, &tmpResults);
 
-			// そのオブジェクトへのヒット結果の中で一番重なり（=近い）ものをチェック
-			for (auto& r : tmpResults) {
-				if (maxOverLap < r.m_overlapDistance) {
-					maxOverLap = r.m_overlapDistance;
-					groundPos = r.m_hitPos;
-					hitObj = obj; // 最も近いオブジェクトを保持
+				// そのオブジェクトへのヒット結果の中で一番重なり（=近い）ものをチェック
+				for (auto& r : tmpResults) {
+					if (maxOverLap < r.m_overlapDistance) {
+						maxOverLap = r.m_overlapDistance;
+						groundPos = r.m_hitPos;
+						hitObj = obj; // 最も近いオブジェクトを保持
+					}
 				}
 			}
+			if (hitObj) {
+				SideBlock* pSideBlock = dynamic_cast<SideBlock*>(hitObj.get());
+				Math::Vector3 BlockSize = pSideBlock->GetBlockSize();
+				if (pSideBlock)
+				{
+					Math::Vector3 p_pos = pSideBlock->GetPos();
+					int dirFlg;
+					float xdiff =groundPos.x - p_pos.x;
+					float ydiff =groundPos.y - p_pos.y;
+					float zdiff =groundPos.z - p_pos.z;
+					if (abs(BlockSize.x - abs(xdiff)) > abs(BlockSize.z - abs(zdiff))) 
+					{
+						if (abs(BlockSize.z - abs(zdiff)) > abs(BlockSize.y - abs(ydiff))) 
+						{
+							dirFlg = -1;
+						}
+						else 
+						{
+							if (zdiff > 0) dirFlg = 1;
+							else dirFlg = 3;
+						}
+					}
+					else 
+					{
+						if (abs(BlockSize.x - abs(xdiff)) > abs(BlockSize.y - abs(ydiff))) 
+						{
+							dirFlg = -1;
+						}
+						else 
+						{
+							if (xdiff > 0) dirFlg = 0;
+							else dirFlg = 2;
+						}
+					}
+					if (dirFlg != -1)
+					{
+						pSideBlock->PushBlock(dirFlg);
+					}
+				}
+			}
+			// デバッグ表示（ヒットしたら赤、していなければ緑）
+			bool hit = (hitObj != nullptr);
+			Math::Color col = hit ? Math::Color(1, 0, 0, 1) : Math::Color(0, 1, 0, 1);
+			//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, col);
+			//m_spAnimator->AdvanceTime(m_model->WorkNodes());
+			ETimer = 60;
 		}
-		if (hitObj) {
-			SideBlock* pSideBlock = dynamic_cast<SideBlock*>(hitObj.get());
-			if (pSideBlock)
-			{
-				Math::Vector3 p_pos = pSideBlock->GetPos();
-				int dirFlg;
-				if (abs(groundPos.x - p_pos.x) > abs(groundPos.z - p_pos.z)) {
-					if (groundPos.x > p_pos.x) dirFlg = 0;
-					else dirFlg = 2;
-				}
-				else {
-					if (groundPos.z > p_pos.z) dirFlg = 1;
-					else dirFlg = 3;
-				}
-				pSideBlock->PushBlock(dirFlg);
-			}
-			SideBlock2* pSideBlock2 = dynamic_cast<SideBlock2*>(hitObj.get());
-			if (pSideBlock2)
-			{
-				Math::Vector3 p_pos = pSideBlock2->GetPos();
-				int dirFlg;
-				if (abs(groundPos.x - p_pos.x) > abs(groundPos.z - p_pos.z)) {
-					if (groundPos.x > p_pos.x) dirFlg = 0;
-					else dirFlg = 2;
-				}
-				else {
-					if (groundPos.z > p_pos.z) dirFlg = 1;
-					else dirFlg = 3;
-				}
-				pSideBlock2->PushBlock(dirFlg);
-			}
-		}
-		// デバッグ表示（ヒットしたら赤、していなければ緑）
-		bool hit = (hitObj != nullptr);
-		Math::Color col = hit ? Math::Color(1, 0, 0, 1) : Math::Color(0, 1, 0, 1);
-		//m_pDebugWire->AddDebugLine(ray.m_pos, ray.m_dir, ray.m_range, col);
 	}
+	if (ETimer != 0) ETimer--;
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
 		if (m_gravity == 0) {
 			m_gravity = -0.5f;
@@ -173,14 +187,18 @@ void SideChara::Update()
 		}
 	}
 	m_dir.y = 0;
-		Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+	Math::Matrix localrotMat = cameraRotMat;
 	m_pos += m_dir * speed;
 	m_gravity += m_gravityacc;
 	m_pos.y -= m_gravity;
 	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
+	Math::Matrix localposMat = Math::Matrix::CreateTranslation(localPos);
+	Math::Matrix localposMatY = Math::Matrix::CreateTranslation(localPosY);
 	Math::Matrix scaleMat = Math::Matrix::CreateScale(2.00f);
 	
 	m_mWorld = scaleMat * rotMat * transMat;
+	m_mlocalWorld = scaleMat * localposMat* localrotMat  * localposMatY * transMat;
 	
 	/*if (m_jumpFlg && moveFlg)
 	{
@@ -233,6 +251,7 @@ void SideChara::PostUpdate()
 		{
 			maxOverlap = result.m_overlapDistance;
 			pushDirection = result.m_hitDir;
+
 			//KdDebugGUI::Instance().AddLog("%f\n", maxOverlap);
 		}
 	}
@@ -248,183 +267,7 @@ void SideChara::PostUpdate()
 
 		m_mWorld = scaleMat * rotMat * transMat;
 	}
-	/*
-	DirectX::BoundingOrientedBox blockBox;
-
-	blockBox.Center = m_pos;
-	blockBox.Extents = Math::Vector3(4.0f, 4.0f, 4.0f);
-	blockBox.Orientation =
-		Math::Quaternion::CreateFromRotationMatrix(cameraRotMat);
-
-	KdCollider::BoxInfo boxInfo(
-		KdCollider::TypeGround|KdCollider::TypeBump,
-		blockBox
-	);
-
-	DirectX::XMFLOAT3 corners[8];
-	blockBox.GetCorners(corners);
-
-	float blockBottomY = FLT_MAX;
-
-	for (const auto& corner : corners)
-	{
-		blockBottomY = std::min(blockBottomY, corner.y);
-	}
-
-	for (auto& obj : SceneManager::Instance().GetObjList())
-	{
-		if (obj.get() == this)
-		{
-			continue;
-		}
-
-		bool hit = obj->Intersects(boxInfo, nullptr);
-
-		if (!hit)
-		{
-			continue;
-		}
-
-		float groundTopY = obj->GetPos().y + 7.98f;
-		float overlap = groundTopY - blockBottomY;
-
-		if (overlap > 0.0f)
-		{
-			m_pos.y += overlap;
-			m_gravity = 0.0f;
-		}
-		if (hit)
-		{
-			KdDebugGUI::Instance().AddLog("Player hit Ground\n");
-		}
-	}
-	//m_pDebugWire->AddDebugBox(Math::Matrix::CreateTranslation(blockBox.Center), blockBox.Extents, Math::Vector3::Zero, true, Math::Color(0, 1, 0, 1));
-
-	Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
-	Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
-	Math::Matrix scaleMat = Math::Matrix::CreateScale(2.00f);
-	m_mWorld = scaleMat * rotMat * transMat;*/
-
-	/*
-	// 立方体の当たり判定を行う
-	// DirectX::BoundingOrientedBox を作成して BoxInfo のコンストラクタで初期化する
-	DirectX::BoundingOrientedBox obb;
-	obb.Center = m_pos;
-	obb.Extents = Math::Vector3(0.5f, 1.5f, 0.5f);
-	// 地面判定対象（TypeGround）と衝突して重ならないようにする
-	KdCollider::BoxInfo box(KdCollider::TypeGround | KdCollider::TypeBump, obb);
-
-	// デバッグ可視化: ボックス描画はヒット判定後に色を変えて描画する
-
 	
-	// 立方体に当たったオブジェクト情報を格納するリスト
-	std::list<KdCollider::CollisionResult> retBoxList;
-	for (auto& obj : SceneManager::Instance().GetObjList()) {
-		obj->Intersects(box, &retBoxList);
-	}
-
-	// 立方体に当たったリストから一番重なりが大きいオブジェクトを探す
-	float maxBoxOverlap = 0;
-	bool boxHit = false;
-	Math::Vector3 boxHitDir; // 当たった方向
-	for (auto& ret : retBoxList) {
-		if (maxBoxOverlap < ret.m_overlapDistance) {
-			maxBoxOverlap = ret.m_overlapDistance;
-			boxHitDir = ret.m_hitDir;
-			
-			// 縦横方向（XZ）のみで押し戻す。上下の補正はレイによる着地処理で行う
-			boxHitDir.y = 0;
-			boxHit = true;
-		}
-	}
-	if (boxHit == true) {
-		if (boxHitDir.LengthSquared() > 0.0f) {
-			boxHitDir.Normalize();
-			m_pos += boxHitDir * maxBoxOverlap;
-		}
-	}
-
-	// モデルベースのコライダーは BOX 判定が未実装の場合があるため、球でも補助判定を行う
-	KdCollider::SphereInfo sphere;
-	sphere.m_sphere.Center = m_pos;
-	sphere.m_sphere.Center.y -= 0.9f;
-	sphere.m_sphere.Radius = 0.5f;
-	sphere.m_type = KdCollider::TypeGround | KdCollider::TypeBump;
-
-	std::list<KdCollider::CollisionResult> retSphereList;
-	for (auto& obj : SceneManager::Instance().GetObjList()) {
-		obj->Intersects(sphere, &retSphereList);
-	}
-
-	// 球に当たったリストから一番重なりが大きいものを探す
-	float maxSphereOverlap = 0;
-	bool sphereHit = false;
-	Math::Vector3 sphereHitDir;
-	for (auto& ret : retSphereList) {
-		if (maxSphereOverlap < ret.m_overlapDistance) {
-			maxSphereOverlap = ret.m_overlapDistance;
-			sphereHitDir = ret.m_hitDir;
-			sphereHit = true;
-		}
-	}
-
-	// 球で当たっているが BOX では検出できていない場合は球の結果で押し戻す
-	if (!boxHit && sphereHit) {
-		if (sphereHitDir.LengthSquared() > 0.0f) {
-			sphereHitDir.Normalize();
-			m_pos += sphereHitDir * maxSphereOverlap;
-			boxHit = true; // 色表示のためヒットと見なす
-		}
-	}
-
-	// デバッグ可視化: ヒットしている場合は赤、していない場合は緑でボックス表示
-	
-	if (m_pDebugWire) {
-		Math::Color col = boxHit ? Math::Color(1, 0, 0, 1) : Math::Color(0, 1, 0, 1);
-		//m_pDebugWire->AddDebugBox(Math::Matrix::CreateTranslation(m_pos), Math::Vector3(0.5f, 1.0f, 0.5f), Math::Vector3::Zero, true, col);
-	}
-	*/
-	/*
-	KdCollider::SphereInfo sphere;
-
-	//球の中心座標を設定
-	sphere.m_sphere.Center = m_pos;
-	sphere.m_sphere.Center.y -= 0.9f;
-
-	//球の半径を設定
-	sphere.m_sphere.Radius = 0.4f;
-
-	//当たり判定をしたいタイプを設定
-	sphere.m_type = KdCollider::TypeGround;
-	
-	//デバッグ用
-	//m_pDebugWire->AddDebugSphere(sphere.m_sphere.Center, sphere.m_sphere.Radius, kRedColor);
-
-	//Z軸固定忘れずに
-	// 球に当たったオブジェクト情報を格納するリスト
-	std::list<KdCollider::CollisionResult> retSphereList;
-	for (auto& obj : SceneManager::Instance().GetObjList()) {
-		obj->Intersects(sphere, &retSphereList);
-	}
-
-	//球に当たったリストから一番近いオブジェクトを探す
-	float maxOverlap = 0;
-	bool hit = false;
-	Math::Vector3 hitDir;//当たった方向
-	for (auto& ret : retSphereList) {
-		if (maxOverlap < ret.m_overlapDistance) {
-			maxOverlap = ret.m_overlapDistance;
-			hitDir = ret.m_hitDir;
-			hitDir.z = 0;
-			hit = true;
-		}
-	}
-	if (hit == true) {
-		//方向ベクトルを長さ1にする
-		hitDir.Normalize();
-		m_pos += hitDir * maxOverlap;
-		
-	}*/
 	KdCollider::RayInfo ray;
 
 	ray.m_pos = m_pos;
@@ -494,11 +337,11 @@ void SideChara::DrawLit()
 {
 	if (m_gameScene->GetNowChara() == GameScene::NowChara::Top)
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mlocalWorld);
 	}
 	else if (m_gameScene->GetNowChara() == GameScene::NowChara::Side)
 	{
-		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mWorld);
+		KdShaderManager::Instance().m_StandardShader.DrawModel(*m_model, m_mlocalWorld);
 	}
 	
 }

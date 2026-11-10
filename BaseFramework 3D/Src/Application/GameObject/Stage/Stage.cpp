@@ -6,8 +6,11 @@
 #include "Block/SideBlock2.h"
 #include "Back/FirstBack.h"
 #include "Gimmick/goal.h"
+#include "Ground/Scaffold.h"
 #include "../Title/Stage Clear.h"
 #include "../../Scene/GameScene/GameScene.h"
+
+
 
 void Stage::Init()
 {
@@ -43,181 +46,69 @@ void Stage::Update()
 void Stage::LoadStage()
 {
 	FILE* fp=NULL;
-	std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
-	std::shared_ptr<TopGround> topGround2 = std::make_shared<TopGround>();
-	std::shared_ptr<SideBlock> sideBlock = std::make_shared<SideBlock>();
-	std::shared_ptr<SideBlock> sideBlock2 = std::make_shared<SideBlock>();
-	std::shared_ptr<SideBlock2> sideBlock3 = std::make_shared<SideBlock2>();
-	std::shared_ptr<goal> goalObj = std::make_shared<goal>();
-	std::shared_ptr<goal> goalObj2 = std::make_shared<goal>();
-	switch (m_stage) {
-	case 1:	
-		GoalCount = 2;
-		topGround->SetGameScene(m_gameScene);
-		topGround->SetStage(1);
-		topGround->SetStep(1);
-		topGround->SetStageSize(5.0f);
-		topGround->Init();
-		topGround->SetPos(Math::Vector3(0.0f, 0.0f, 0.0f));
-		SceneManager::Instance().AddObject(topGround);
-		fp = fopen("StageData/Stage1.txt", "r");
-
-		sideBlock->SetGameScene(m_gameScene);
-		sideBlock->Init();
-		sideBlock->SetPos(Math::Vector3(0.0f, 16.0f, 16.0f));
-		SceneManager::Instance().AddObject(sideBlock);
-		sideBlock2->SetGameScene(m_gameScene);
-		sideBlock2->Init();
-		sideBlock2->SetPos(Math::Vector3(16.0f, 16.0f, -16.0f));
-		SceneManager::Instance().AddObject(sideBlock2);
-
-		topGround2->SetGameScene(m_gameScene);
-		topGround2->SetStage(1);
-		topGround2->SetStep(2);
-		topGround2->Init();
-		topGround2->SetPos(Math::Vector3(0.0f, 100.0f, 0.0f));
-
-		goalObj->SetGameScene(m_gameScene);
-		goalObj->SetStage(this);
-		goalObj->Init();
-		goalObj->SetPos(Math::Vector3(0.0f, 16.0f, -16.0f));
-		SceneManager::Instance().AddObject(goalObj);
-		goalObj2->SetGameScene(m_gameScene);
-		goalObj2->SetStage(this);
-		goalObj2->Init();
-		goalObj2->SetPos(Math::Vector3(-32.0f, 16.0f, 16.0f));
-		SceneManager::Instance().AddObject(goalObj2);
-		//SceneManager::Instance().AddObject(topGround2);
-		break;
-	case 2:
-		Goal = 0;
-		GoalCount = 2;
-		topGround->SetGameScene(m_gameScene);
-		topGround->SetStage(2);
-		topGround->SetStep(1);
-		topGround->SetStageSize(5.0f);
-		topGround->Init();
-		topGround->SetPos(Math::Vector3(0.0f, 0.0f, 0.0f));
-		SceneManager::Instance().AddObject(topGround);
-		sideBlock3->SetGameScene(m_gameScene);
-		sideBlock3->Init();
-		sideBlock3->SetPos(Math::Vector3(-16.0f, 32.0f, 16.0f));
-		SceneManager::Instance().AddObject(sideBlock3);
-		sideBlock->SetGameScene(m_gameScene);
-		sideBlock->Init();
-		sideBlock->SetPos(Math::Vector3(16.0f, 16.0f, -16.0f));
-		SceneManager::Instance().AddObject(sideBlock);
-		goalObj->SetGameScene(m_gameScene);
-		goalObj->SetStage(this);
-		goalObj->Init();
-		goalObj->SetPos(Math::Vector3(16.0f, 48.0f, -16.0f));
-		SceneManager::Instance().AddObject(goalObj);
-		goalObj2->SetGameScene(m_gameScene);
-		goalObj2->SetStage(this);
-		goalObj2->Init();
-		goalObj2->SetPos(Math::Vector3(-32.0f, 16.0f, 16.0f));
-		SceneManager::Instance().AddObject(goalObj2);
-		fp = fopen("StageData/Stage2.txt", "r");
-		break;
-	case 3:
-		Goal = 0;
-		GoalCount = 2;
-		topGround->SetGameScene(m_gameScene);
-		topGround->SetStage(3);
-		topGround->SetStep(1);
-		topGround->Init();
-		topGround->SetPos(Math::Vector3(0.0f, 0.0f, 0.0f));
-		SceneManager::Instance().AddObject(topGround);
-		fp = fopen("StageData/Stage3.txt", "r");
-		break;
-	case 4:
-		topGround->SetGameScene(m_gameScene);
-		topGround->SetStage(3);
-		topGround->Init();
-		topGround->SetPos(Math::Vector3(-20.0f, -8.0f, 0.0f));
-		SceneManager::Instance().AddObject(topGround);
-		fp = fopen("StageData/Stage3.txt", "r");
-		break;
-	case 5:
-		fp = fopen("StageData/Stage5.txt", "r");
-		break;
-	case 6:
-		fp = fopen("StageData/Stage6.txt", "r");
-		break;
-	}
-
-	/*std::shared_ptr<FirstBack> firstBack = std::make_shared<FirstBack>();
-	firstBack->SetGameScene(m_gameScene);
-	firstBack->SetPos(Math::Vector3(0, 0, 27.0f));
-	firstBack->Init();*/
-	//SceneManager::Instance().AddObject(firstBack);
+	fp = fopen(("StageData/Stage" + std::to_string(m_stage) + ".txt").c_str(), "r");
 
 	if (fp != nullptr) {
-		int x, y, Data;
-		fscanf_s(fp, "%d,%d\n", &x, &y);
-		int sidex, sidey;
-		int topx, topy;
-		fscanf_s(fp, "%d,%d\n", &sidex, &sidey);
-		fscanf_s(fp, "%d,%d\n", &topx, &topy);
-	
+		std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
+		int StageSize;
+		fscanf_s(fp, "%d\n", &StageSize);
+		topGround->SetGameScene(m_gameScene);
+		topGround->SetStage(m_stage);
+		topGround->SetStep(1);
+		topGround->SetStageSize((float)StageSize);
+		topGround->Init();
+		topGround->SetPos(Math::Vector3(0.0f, 0.0f, 0.0f));
+		SceneManager::Instance().AddObject(topGround);
 		
-
-		
-		for (int i = 0; i < y; i++) {
-			for (int j = 0; j < x; j++) {
-				fscanf_s(fp, "%d,", &Data);
-				switch (Data) {
-					/*case 0:
-						StageData[i][j] = 0;
-						break;
-					case 1:
-						StageData[i][j] = 1;
-						if (i != 0 && StageData[i - 1][j] == 0)
-						{
-							{
-								std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
-								topGround->SetGameScene(m_gameScene);
-								topGround->SetPos(Math::Vector3((float)j * 2.0f - 20, (float)i * (-2.0f) + 10, 0.0f));
-								topGround->Init();
-								SceneManager::Instance().AddObject(topGround);
-							}
-							 {
-								std::shared_ptr<TopGround> topGround = std::make_shared<TopGround>();
-								topGround->SetGameScene(m_gameScene);
-								topGround->SetPos(Math::Vector3((float)j * (-2.0f) + 20, (float)i * (-2.0f) + 10, -40.0f));
-								topGround->Init();
-								SceneManager::Instance().AddObject(topGround);
-							}
-						}
-						else
-						{
-							{
-								std::shared_ptr<MidGround> midGround = std::make_shared<MidGround>();
-								midGround->SetGameScene(m_gameScene);
-								midGround->SetPos(Math::Vector3((float)j * 2.0f - 20, (float)i * (-2.0f) + 10, 0.0f));
-								midGround->Init();
-								SceneManager::Instance().AddObject(midGround);
-							}
-							 {
-								std::shared_ptr<MidGround> midGround = std::make_shared<MidGround>();
-								midGround->SetGameScene(m_gameScene);
-								midGround->SetPos(Math::Vector3((float)j * (-2.0f) + 20, (float)i * (-2.0f) + 10, -40.0f));
-								midGround->Init();
-								SceneManager::Instance().AddObject(midGround);
-							}
-						}
-						
-						break;*/
-					case 2:
-						StageData[i][j] = 2;
-						std::shared_ptr<SideBlock> sideBlock = std::make_shared<SideBlock>();
-						sideBlock->SetGameScene(m_gameScene);
-						sideBlock->SetPos(Math::Vector3((float)j * 2.0f, (float)i * (-2.0f)+10, 0.0f));
-						//sideBlock->SetTarget(top);
-						sideBlock->Init();
-						SceneManager::Instance().AddObject(sideBlock);
-						break;
+		float center = (float)(StageSize - 1) /2.0f;
+		fscanf_s(fp, "%d\n", &GoalCount);
+		std::shared_ptr<SideBlock> sideBlock;
+		for (int i = 0;i < GoalCount;i++) {
+			
+			int x, y, z, size;
+			fscanf_s(fp, "%d,%d,%d,%d\n", &x, &y, &z, &size);
+			sideBlock = std::make_shared<SideBlock>();
+			sideBlock->SetGameScene(m_gameScene);
+			sideBlock->SetStage(this);
+			sideBlock->SetBlockSize(size);
+			sideBlock->SetStageDataptr(&StageData);
+			sideBlock->Init();
+			sideBlock->SetPos(Math::Vector3(16.0f*(float)(x-center), 16.0f * (float)(y + 1), -16.0f* (float)(z - center)));
+			sideBlock->SetStagePos(x, y, z);
+			sideBlock->SetStageSize(StageSize);
+			SceneManager::Instance().AddObject(sideBlock);
+		}
+		std::shared_ptr<goal> goalObj;
+		for (int i = 0;i < GoalCount;i++) {
+			
+			int x, y, z;
+			fscanf_s(fp, "%d,%d,%d\n", &x, &y, &z);
+			goalObj = std::make_shared<goal>();
+			goalObj->SetGameScene(m_gameScene);
+			goalObj->SetStage(this);
+			goalObj->Init();
+			goalObj->SetPos(Math::Vector3(16.0f*(float)(x-center), 16.0f * (float)(y + 1), -16.0f* (float)(z - center)));
+			SceneManager::Instance().AddObject(goalObj);
+		}
+		std::shared_ptr<Scaffold> scaffold = std::make_shared<Scaffold>();
+		int ScaffoldSize;
+		fscanf_s(fp, "%d\n", &ScaffoldSize);
+		for (int i = 0;i < ScaffoldSize;i++) {
+			int x, y, z;
+			fscanf_s(fp, "%d,%d,%d\n", &x, &y, &z);
+			scaffold = std::make_shared<Scaffold>();
+			scaffold->SetGameScene(m_gameScene);
+			scaffold->Init();
+			scaffold->SetPos(Math::Vector3(16.0f * (float)(x - center), 16.0f * (float)(y + 1)+8.0f, -16.0f * (float)(z - center)));
+			SceneManager::Instance().AddObject(scaffold);
+		}
+		for (int y = 0;y < StageSize;y++) {
+			fscanf_s(fp, "\n");
+			for (int z = 0;z < StageSize;z++) {
+				for (int x = 0;x < StageSize;x++) {
+					fscanf_s(fp, "%c", &StageData[x][StageSize - 1 - y][z]);
 				}
+				fscanf_s(fp, "\n");
 			}
 		}
 		fclose(fp);
