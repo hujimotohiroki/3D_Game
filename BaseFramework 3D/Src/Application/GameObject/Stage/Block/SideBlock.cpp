@@ -19,9 +19,9 @@ void SideBlock::Init()
 			m_model->Load("Asset/Models/Block/SideBlock3.gltf");
 			break;
 	}
-	m_model->Load("Asset/Models/Block/SideBlock.gltf");
+	//m_model->Load("Asset/Models/Block/SideBlock.gltf");
 	blockBox.Center = m_pos;
-	blockBox.Extents = Math::Vector3(1.99f, 1.99f*(float)m_blockSize, 1.99f);
+	blockBox.Extents = Math::Vector3(square/8.0f, square/8.0f*(float)m_blockSize, square/8.0f);
 	blockBox.Orientation = Math::Quaternion::Identity;
 
 	m_pCollider = std::make_unique<KdCollider>();
@@ -39,36 +39,38 @@ void SideBlock::Init()
 
 void SideBlock::Update()
 {
-	if(rollFlg!=0)
+	if(rollFlg!=-1)
 	{
 		switch (rollFlg)
 		{
+		case 0:
+			
+			localRotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(4.5f));
+			break;
 		case 1:
-			m_pos.x -= 0.8f;
-			RotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(4.5f));
+			
+			localRotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(-4.5f));
 			break;
 		case 2:
-			m_pos.z -= 0.8f;
-			RotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(-4.5f));
+			
+			localRotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(-4.5f));
 			break;
 		case 3:
-			m_pos.x += 0.8f;
-			RotMat *= Math::Matrix::CreateRotationZ(DirectX::XMConvertToRadians(-4.5f));
-			break;
-		case 4:
-			m_pos.z += 0.8f;
-			RotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(4.5f));
+			
+			localRotMat *= Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(4.5f));
 			break;
 		}
-		rollCount+=rollFlg/abs(rollFlg);
+		rollCount++;
 		if (rollCount == 20|| rollCount == 0) {
-			rollFlg = 0;
+			rollFlg = -1;
 			rollCount = 0;
 		}
+		// 回し終わったらデータにブロックを再設定する
 	}
 	//KdDebugGUI::Instance().AddLog("%d\n", rollFlg);
+	Math::Matrix localPosMat = Math::Matrix::CreateTranslation(m_localPos);
 	
-	m_mWorld = Math::Matrix::CreateScale(4)*RotMat* Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = Math::Matrix::CreateScale(4) * localPosMat*localRotMat* Math::Matrix::CreateTranslation(m_pos);
 
 	
 }
@@ -126,7 +128,12 @@ void SideBlock::PushBlock(int Flg)
 		{
 			KdDebugGUI::Instance().AddLog("0OK\n");
 			m_pStage->SetStageData(StageX, StageY, StageZ, '0');
-			moveDir = Math::Vector3(-1, 0, 0);
+			float center = (float)(StageSize - 1) / 2.0f;
+			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+			m_pos = Math::Vector3(square * (float)(StageX - center)-square/2.0f, square * (float)(StageY + 1)-square/2.0f, -square * (float)(StageZ - center));
+			m_localPos = Math::Vector3(square/2.0f, square/2.0f, 0);
+			localRotMat = Math::Matrix::Identity;
+			//moveDir = Math::Vector3(-1, 0, 0);
 			StageX--;
 		}
 		break;
@@ -161,6 +168,11 @@ void SideBlock::PushBlock(int Flg)
 		{
 			KdDebugGUI::Instance().AddLog("1OK\n");
 			m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+			float center = (float)(StageSize - 1) / 2.0f;
+			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+			m_pos = Math::Vector3(square * (float)(StageX - center), square * (float)(StageY + 1) - square/2.0f, -square * (float)(StageZ - center) - square/2.0f);
+			m_localPos = Math::Vector3( 0.0f,square/2.0f,square / 2.0f );
+			localRotMat = Math::Matrix::Identity;
 			moveDir = Math::Vector3(0, 0, -1);
 			StageZ++;
 		}
@@ -197,6 +209,11 @@ void SideBlock::PushBlock(int Flg)
 		{
 			KdDebugGUI::Instance().AddLog("2OK\n");
 			m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+			float center = (float)(StageSize - 1) / 2.0f;
+			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+			m_pos = Math::Vector3(square * (float)(StageX - center) + square / 2.0f, square * (float)(StageY + 1) - square / 2.0f, -square * (float)(StageZ - center));
+			m_localPos = Math::Vector3(-square / 2.0f, square / 2.0f, 0);
+			localRotMat = Math::Matrix::Identity;
 			moveDir = Math::Vector3(1, 0, 0);
 			StageX++;
 		}
@@ -232,14 +249,23 @@ void SideBlock::PushBlock(int Flg)
 		{
 			KdDebugGUI::Instance().AddLog("3OK\n");
 			m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+			float center = (float)(StageSize - 1) / 2.0f;
+			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+			m_pos = Math::Vector3(square * (float)(StageX - center), square * (float)(StageY + 1) - square / 2.0f, -square * (float)(StageZ - center) + square / 2.0f);
+			m_localPos = Math::Vector3(0.0f, square / 2.0f, -square / 2.0f);
+			localRotMat = Math::Matrix::Identity;
 			moveDir = Math::Vector3(0, 0, 1);
 			StageZ--;
 		}
 		break;
 	}
-	if (!ishit) {//当たってないなら
-		m_pStage->SetStageData(StageX,StageY,StageZ,'B');
-		m_pos += moveDir * 16.0f;
+	if (!ishit) //当たってないなら
+	{
+
+		//m_pStage->SetStageData(StageX,StageY,StageZ,'B');
+		//m_pos += moveDir * 16.0f;
+		rollFlg = Flg;
+		rollCount = 0;
 	}
 	
 }

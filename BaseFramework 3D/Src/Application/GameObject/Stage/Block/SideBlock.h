@@ -23,18 +23,22 @@ public:
 
 	void SetStageDataptr(array<array<array<char, 10>, 10>, 10>* stageData) { m_pStageData = stageData; }
 private:
+	const float square = 16.0f;
+
 	Stage* m_pStage = nullptr;
 	std::weak_ptr<KdGameObject> m_wpTarget;
 	Math::Vector3 Targetpos = Math::Vector3::Zero;
 	Math::Matrix RotMat = Math::Matrix::Identity;
+	Math::Vector3 m_localPos = Math::Vector3::Zero;
+	Math::Vector3 m_localRot = Math::Vector3::Zero;
 	Math::Matrix localRotMat = Math::Matrix::Identity;
-	Math::Matrix localPosMat = Math::Matrix::Identity;
+	
 	int StageX, StageY, StageZ;
 	int StageSize;
 	DirectX::BoundingOrientedBox blockBox;
 	int m_blockSize = 1;
 	Math::Vector3 m_collisionHalfSize = Math::Vector3(8.0f, 8.0f, 8.0f);
-	int rollFlg = 0;
+	int rollFlg = -1;
 	int rollCount = 0;
 	array<array<array<char, 10>, 10>, 10>* m_pStageData = { nullptr };
 };

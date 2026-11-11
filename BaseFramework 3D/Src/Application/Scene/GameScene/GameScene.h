@@ -29,6 +29,8 @@ private:
 	void Event() override;
 	void Init()  override;
 
+	void ResetStage();
+
 	KdModelData m_model;
 
 	std::shared_ptr<FPSCamera>		Fcamera = nullptr;

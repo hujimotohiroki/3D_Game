@@ -18,21 +18,15 @@ void GameScene::Event()
 			SceneManager::SceneType::StageSelect
 		);
 	}
-	/*if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+	if (GetAsyncKeyState('R') & 0x8000)
 	{
-		if(!shiftFlg)
-		{
-			chara = (NowChara)(((int)chara + 1) % 2);
-			shiftFlg = true;
-			isFPSCamera = !isFPSCamera;
-			Tcamera->Setm_spCamera(!isFPSCamera);
-			Fcamera->Setm_spCamera(isFPSCamera);
-		}
+		if (!ResetFlg) ResetStage();
+		ResetFlg = true;
 	}
 	else
 	{
-		shiftFlg = false;
-	}*/
+		ResetFlg = false;
+	}
 	if (NextStageFlg)
 	{
 		m_nowStage++;
@@ -78,53 +72,6 @@ void GameScene::Event()
 
 		shiftFlg = false;
 		NextStageFlg = false;
-	}
-	if (ResetFlg)
-	{
-		m_objList.clear();
-	
-		Fcamera = std::make_shared<FPSCamera>();
-		Fcamera->Init();
-		Fcamera->Setm_spCamera(true);
-		m_objList.push_back(Fcamera);
-
-		std::shared_ptr<Stage> stage = std::make_shared<Stage>();
-		stage->SetStage(m_nowStage);
-		stage->SetGameScene(this);
-		stage->Init();
-		m_objList.push_back(stage);
-	
-		side = std::make_shared<SideChara>();
-		side->Init();
-		side->SetGameScene(this);
-		side->SetPos(Math::Vector3(-32.0f, 10.0f, -32.0f));
-		m_objList.push_back(side);
-
-		Fcamera->SetTarget(side);
-		side->SetTarget(Fcamera);
-
-		top = std::make_shared<TopChara>();
-		top->Init();
-		top->SetGameScene(this);
-		top->SetPos(Math::Vector3(-20.0f, 8.0f, 0.0f));
-		m_objList.push_back(top);
-
-
-		std::shared_ptr<TV> tv = std::make_shared<TV>();
-		tv->Init();
-		tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
-		//m_objList.push_back(tv);
-
-		std::shared_ptr<REC> rec = std::make_shared<REC>();
-		rec->Init();
-		//m_objList.push_back(rec);
-
-		std::shared_ptr<Controller> controller = std::make_shared<Controller>();
-		controller->Init();
-		//m_objList.push_back(controller);
-
-		shiftFlg = false;
-		ResetFlg = false;
 	}
 }
 
@@ -173,6 +120,53 @@ void GameScene::Init()
 	std::shared_ptr<Controller> controller = std::make_shared<Controller>();
 	controller->Init();
 	m_objList.push_back(controller);
+
+	shiftFlg = false;
+}
+
+void GameScene::ResetStage()
+{
+	m_objList.clear();
+
+	Fcamera = std::make_shared<FPSCamera>();
+	Fcamera->Init();
+	Fcamera->Setm_spCamera(true);
+	m_objList.push_back(Fcamera);
+
+	std::shared_ptr<Stage> stage = std::make_shared<Stage>();
+	stage->SetStage(m_nowStage);
+	stage->SetGameScene(this);
+	stage->Init();
+	m_objList.push_back(stage);
+
+	side = std::make_shared<SideChara>();
+	side->Init();
+	side->SetGameScene(this);
+	side->SetPos(Math::Vector3(-32.0f, 10.0f, -32.0f));
+	m_objList.push_back(side);
+
+	Fcamera->SetTarget(side);
+	side->SetTarget(Fcamera);
+
+	top = std::make_shared<TopChara>();
+	top->Init();
+	top->SetGameScene(this);
+	top->SetPos(Math::Vector3(-20.0f, 8.0f, 0.0f));
+	m_objList.push_back(top);
+
+
+	std::shared_ptr<TV> tv = std::make_shared<TV>();
+	tv->Init();
+	tv->SetPos(Math::Vector3(0.0f, -6.0f, -14.0f));
+	//m_objList.push_back(tv);
+
+	std::shared_ptr<REC> rec = std::make_shared<REC>();
+	rec->Init();
+	//m_objList.push_back(rec);
+
+	std::shared_ptr<Controller> controller = std::make_shared<Controller>();
+	controller->Init();
+	//m_objList.push_back(controller);
 
 	shiftFlg = false;
 }
