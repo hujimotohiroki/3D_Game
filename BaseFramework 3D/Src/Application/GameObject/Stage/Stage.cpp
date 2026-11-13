@@ -21,7 +21,7 @@ void Stage::Init()
 
 void Stage::Update()
 {
-	KdDebugGUI::Instance().AddLog("Goal:%d GoalCount:%d\n", Goal, GoalCount);
+	//KdDebugGUI::Instance().AddLog("Goal:%d GoalCount:%d\n", Goal, GoalCount);
 	if(nextstagecount==0){
 		if (Goal == GoalCount){
 			nextstagecount = 1;
@@ -65,15 +65,17 @@ void Stage::LoadStage()
 		std::shared_ptr<SideBlock> sideBlock;
 		for (int i = 0;i < GoalCount;i++) {
 			
-			int x, y, z, size;
-			fscanf_s(fp, "%d,%d,%d,%d\n", &x, &y, &z, &size);
+			float x, y, z, xsize,ysize,zsize;
+			int type;
+			fscanf_s(fp, "%f,%f,%f,%f,%f,%f,%d\n", &x, &y, &z, &xsize, &ysize, &zsize, &type);
 			sideBlock = std::make_shared<SideBlock>();
 			sideBlock->SetGameScene(m_gameScene);
 			sideBlock->SetStage(this);
-			sideBlock->SetBlockType(size);
+			sideBlock->SetBlockType(type);
 			sideBlock->SetStageDataptr(&StageData);
+			sideBlock->SetBlockSize(Math::Vector3(xsize, ysize, zsize));
 			sideBlock->Init();
-			sideBlock->SetPos(Math::Vector3(squaresize*(float)(x-center), squaresize * (float)(y + 1), -squaresize* (float)(z - center)));
+			sideBlock->SetPos(Math::Vector3(squaresize*(x-center), squaresize * (y + 1.0f), -squaresize* (z - center)));
 			sideBlock->SetStagePos(x, y, z);
 			sideBlock->SetStageSize(StageSize);
 			SceneManager::Instance().AddObject(sideBlock);
@@ -81,25 +83,25 @@ void Stage::LoadStage()
 		std::shared_ptr<goal> goalObj;
 		for (int i = 0;i < GoalCount;i++) {
 			
-			int x, y, z;
-			fscanf_s(fp, "%d,%d,%d\n", &x, &y, &z);
+			float x, y, z;
+			fscanf_s(fp, "%f,%f,%f\n", &x, &y, &z);
 			goalObj = std::make_shared<goal>();
 			goalObj->SetGameScene(m_gameScene);
 			goalObj->SetStage(this);
 			goalObj->Init();
-			goalObj->SetPos(Math::Vector3(squaresize*(float)(x-center), squaresize * (float)(y + 1), -squaresize* (float)(z - center)));
+			goalObj->SetPos(Math::Vector3(squaresize*(x-center), squaresize * (y + 1.0f), -squaresize * (z - center)));
 			SceneManager::Instance().AddObject(goalObj);
 		}
 		std::shared_ptr<Scaffold> scaffold = std::make_shared<Scaffold>();
 		int ScaffoldSize;
 		fscanf_s(fp, "%d\n", &ScaffoldSize);
 		for (int i = 0;i < ScaffoldSize;i++) {
-			int x, y, z;
-			fscanf_s(fp, "%d,%d,%d\n", &x, &y, &z);
+			float x, y, z;
+			fscanf_s(fp, "%f,%f,%f\n", &x, &y, &z);
 			scaffold = std::make_shared<Scaffold>();
 			scaffold->SetGameScene(m_gameScene);
 			scaffold->Init();
-			scaffold->SetPos(Math::Vector3(squaresize * (float)(x - center), squaresize * (float)(y + 1)+8.0f, -squaresize * (float)(z - center)));
+			scaffold->SetPos(Math::Vector3(squaresize * (x - center), squaresize * (y + 1.0f)+8.0f, -squaresize * (z - center)));
 			SceneManager::Instance().AddObject(scaffold);
 		}
 		for (int y = 0;y < StageSize;y++) {

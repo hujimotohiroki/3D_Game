@@ -64,7 +64,7 @@ void SideBlock::Update()
 			break;
 		}
 		rollCount++;
-		if (rollCount == 20|| rollCount == 0) {
+		if (rollCount == 20) {
 			rollFlg = -1;
 			rollCount = 0;
 			if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'G')
@@ -76,6 +76,8 @@ void SideBlock::Update()
 			{
 				m_pStage->SetStageData(StageX, StageY, StageZ, 'B');
 			}
+			m_blockSize = Math::Vector3::TransformNormal(m_blockSize, localRotMat);
+			m_collisionHalfSize = m_blockSize * 8.0f;
 		}
 		// 回し終わったらデータにブロックを再設定する
 	}
@@ -104,211 +106,250 @@ void SideBlock::DrawLit()
 
 void SideBlock::PushBlock(int Flg)
 {
+	/*
+	1.横縦高さを調べる
+	2.軸になる場所を調べる
+	3.軸より上の衝突判定をする
+	4.軸より下の衝突判定をする
+	5.動かす
+	*/
 	bool ishit = false;
 	Math::Vector3 moveDir = Math::Vector3::Zero;
-	switch (Flg)
+	switch(m_blockType)
 	{
-	case 0:
-		if (StageX == 0) ishit = true; // プレイエリア範囲外に出る場合は判定しない
-		if (ishit) break;
-
-		for (int x = 0;x < StageX+1;x++) 
-		{
-			for (int y = StageY;y < StageSize;y++) 
-			{
-				
-				char a = m_pStageData->at(x).at(y).at(StageZ);
-				if (a == '0' || a == 'G') continue; // 虚無とゴールは当たり判定なし
-				if (x == StageX && y == StageY) continue; // 自分自身は当たり判定なし
-				if (y == StageY) { 
-					if (StageX - x <= m_blockType) ishit = true;
-				}
-				else
-				{
-					int xdiff = max(0, StageX - x - 1);
-					int ydiff = StageY - y;
-					if (sqrt(pow(xdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2))
-					{
-						KdDebugGUI::Instance().AddLog("[%d][%d][%d] %c Hit\n", x, y, StageZ, a);
-						ishit = true;
-					}
-				}
-			}
-		}
-
-		if (!ishit)
-		{
-			KdDebugGUI::Instance().AddLog("0OK\n");
-			if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
-			{
-				m_pStage->SubtractGoal();
-				m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
-			}
-			else
-			{
-				m_pStage->SetStageData(StageX, StageY, StageZ, '0');
-			}
-			float center = (float)(StageSize - 1) / 2.0f;
-			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
-			m_pos = Math::Vector3(squaresize * (float)(StageX - center)-squaresize/2.0f, squaresize * (float)(StageY + 1)-squaresize/2.0f, -squaresize * (float)(StageZ - center));
-			m_localPos = Math::Vector3(squaresize/2.0f, squaresize/2.0f, 0);
-			localRotMat = Math::Matrix::Identity;
-			//moveDir = Math::Vector3(-1, 0, 0);
-			StageX--;
-		}
-		break;
 	case 1:
-		if (StageZ == StageSize - 1) ishit = true; 
-		if (ishit) break;
-
-		for (int z = StageZ;z < StageSize;z++) 
+		switch (Flg)
 		{
-			for (int y = StageY;y < StageSize;y++) 
+		case 0:
+			KdDebugGUI::Instance().AddLog("0START\n");
+			if (StageX == 0) ishit = true; // プレイエリア範囲外に出る場合は判定しない
+			if (ishit) break;
+
+			for (int x = 0;x < StageX + 1;x++)
 			{
-				
-				char a = m_pStageData->at(StageX).at(y).at(z);
-				if (a == '0' || a == 'G') continue;
-				if (z == StageZ && y == StageY) continue;
-				if (y == StageY) {
-					if (z - StageZ <= m_blockType) ishit = true;
-				}
-				else
+				for (int y = StageY;y < StageSize;y++)
 				{
-					int zdiff = max(0, z - StageZ - 1);
-					int ydiff = StageY - y;
-					if (sqrt(pow(zdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2))
+
+					for (int z =ceil(StageZ-m_blockSize.z/2.0f);z < StageZ + m_blockSize.z/2;z++)
 					{
-						KdDebugGUI::Instance().AddLog("[%d][%d][%d] %c Hit\n", StageX, y, z, a);
-						ishit = true;
+						char a = m_pStageData->at(x).at(y).at(z);
+						if (a == '0' || a == 'G') continue; // 虚無とゴールは当たり判定なし
+						if (x == StageX && y == StageY) continue; // 自分自身は当たり判定なし
+						if (y == StageY) {
+							if (StageX - x <= m_blockType) 
+							{
+								KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", x, y, z, a);
+								ishit = true;
+							}
+						}
+						else
+						{
+							int xdiff = max(0, StageX - x - 1);
+							int ydiff = StageY - y;
+							if (sqrt(pow(xdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2))
+							{
+								KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", x, y, z, a);
+								ishit = true;
+							}
+						}
 					}
 				}
 			}
-		}
-		if (!ishit)
-		{
-			KdDebugGUI::Instance().AddLog("1OK\n");
-			if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
-			{
-				m_pStage->SubtractGoal();
-				m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
-			}
-			else
-			{
-				m_pStage->SetStageData(StageX, StageY, StageZ, '0');
-			}
-			float center = (float)(StageSize - 1) / 2.0f;
-			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
-			m_pos = Math::Vector3(squaresize * (float)(StageX - center), squaresize * (float)(StageY + 1) - squaresize/2.0f, -squaresize * (float)(StageZ - center) - squaresize/2.0f);
-			m_localPos = Math::Vector3( 0.0f,squaresize/2.0f,squaresize / 2.0f );
-			localRotMat = Math::Matrix::Identity;
-			moveDir = Math::Vector3(0, 0, -1);
-			StageZ++;
-		}
-		break;
-	case 2:
-		if (StageX == StageSize - 1) ishit = true; 
-		if (ishit) break;
 
-		for (int x = StageX;x < StageSize;x++) 
-		{
-			for (int y = StageY;y < StageSize;y++) 
+			if (!ishit)
 			{
-				
-				char a = m_pStageData->at(x).at(y).at(StageZ);
-				if (a == '0' || a == 'G') continue;
-				if (x == StageX && y == StageY) continue;
-				if (y == StageY) {
-					if (x - StageX <= m_blockType) ishit = true;
-				}
-				else
+				KdDebugGUI::Instance().AddLog("0OK\n");
+				for (int x=ceil(StageX-m_blockSize.x/2.0f);x < StageX + m_blockSize.x/2;x++)
 				{
-					int xdiff = max(0, x - StageX - 1);
-					int ydiff = StageY - y;
-					if (sqrt(pow(xdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2))
+					for (int y = ceil(StageY-m_blockSize.y/2.0f);y < StageY+m_blockSize.y/2;y++)
 					{
-						KdDebugGUI::Instance().AddLog("[%d][%d][%d] %c Hit\n",x,y,StageZ,a);
-						ishit = true;
+						for (int z =ceil(StageZ-m_blockSize.z/2.0f);z < StageZ + m_blockSize.z/2;z++)
+						{
+							if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
+							{
+								m_pStage->SubtractGoal();
+								m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
+							}
+							else
+							{
+								m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+							}
+						}
+					}
+				}
+				float center = (float)(StageSize - 1) / 2.0f;
+				// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+				m_pos = Math::Vector3(squaresize * (float)(StageX - center) - squaresize / 2.0f, squaresize * (float)(StageY + 1) - squaresize / 2.0f, -squaresize * (float)(StageZ - center));
+				m_localPos = Math::Vector3(squaresize / 2.0f, squaresize / 2.0f, 0);
+				localRotMat = Math::Matrix::Identity;
+				//moveDir = Math::Vector3(-1, 0, 0);
+				StageX-=1.0f;
+			}
+			break;
+		case 1:
+			if (StageZ == StageSize - 1) ishit = true;
+			if (ishit) break;
+
+			for (int z = StageZ;z < StageSize;z++)
+			{
+				for (int y = StageY;y < StageSize;y++)
+				{
+
+					char a = m_pStageData->at(StageX).at(y).at(z);
+					if (a == '0' || a == 'G') continue;
+					if (z == StageZ && y == StageY) continue;
+					if (y == StageY) {
+						if (z - StageZ <= m_blockType) 
+						{
+							KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", StageX, y, z, a);
+							ishit = true;
+						}
+					}
+					else
+					{
+						int zdiff = max(0, z - StageZ - 1);
+						int ydiff = StageY - y;
+						if (sqrt(pow(zdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2))
+						{
+							KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", StageX, y, z, a);
+							ishit = true;
+						}
 					}
 				}
 			}
-		}
-
-		if (!ishit)
-		{
-			KdDebugGUI::Instance().AddLog("2OK\n");
-			if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
+			if (!ishit)
 			{
-				m_pStage->SubtractGoal();
-				m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
-			}
-			else
-			{
-				m_pStage->SetStageData(StageX, StageY, StageZ, '0');
-			}
-			float center = (float)(StageSize - 1) / 2.0f;
-			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
-			m_pos = Math::Vector3(squaresize * (float)(StageX - center) + squaresize / 2.0f, squaresize * (float)(StageY + 1) - squaresize / 2.0f, -squaresize * (float)(StageZ - center));
-			m_localPos = Math::Vector3(-squaresize / 2.0f, squaresize / 2.0f, 0);
-			localRotMat = Math::Matrix::Identity;
-			moveDir = Math::Vector3(1, 0, 0);
-			StageX++;
-		}
-		break;
-	case 3:
-		if (StageZ == 0) ishit = true; 
-		if (ishit) break;
-
-		for (int z = 0;z < StageZ + 1;z++) 
-		{
-			for (int y = StageY;y < StageSize;y++) 
-			{
-				char a = m_pStageData->at(StageX).at(y).at(z);
-				if (a == '0' || a == 'G') continue;
-				if (z == StageZ && y == StageY) continue;
-				if (y == StageY) {
-					if (StageZ - z <= m_blockType)
-					{
-						KdDebugGUI::Instance().AddLog("[%d][%d][%d] %c Hit\n", StageX, y, z, a);
-						ishit = true;
-					}
+				KdDebugGUI::Instance().AddLog("1OK\n");
+				if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
+				{
+					m_pStage->SubtractGoal();
+					m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
 				}
 				else
 				{
-					int zdiff = max(0, StageZ - z - 1);
-					int ydiff = StageY - y;
-					if (sqrt(pow(zdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2)) ishit = true;
+					m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+				}
+				float center = (float)(StageSize - 1) / 2.0f;
+				// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+				m_pos = Math::Vector3(squaresize * (float)(StageX - center), squaresize * (float)(StageY + 1) - squaresize / 2.0f, -squaresize * (float)(StageZ - center) - squaresize / 2.0f);
+				m_localPos = Math::Vector3(0.0f, squaresize / 2.0f, squaresize / 2.0f);
+				localRotMat = Math::Matrix::Identity;
+				moveDir = Math::Vector3(0, 0, -1);
+				StageZ+=1.0f;
+			}
+			break;
+		case 2:
+			if (StageX == StageSize - 1) ishit = true;
+			if (ishit) break;
+
+			for (int x = StageX;x < StageSize;x++)
+			{
+				for (int y = StageY;y < StageSize;y++)
+				{
+
+					char a = m_pStageData->at(x).at(y).at(StageZ);
+					if (a == '0' || a == 'G') continue;
+					if (x == StageX && y == StageY) continue;
+					if (y == StageY) {
+						if (x - StageX <= m_blockType) 
+						{
+							KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", x, y, StageZ, a);
+							ishit = true;
+						}
+					}
+					else
+					{
+						int xdiff = max(0, x - StageX - 1);
+						int ydiff = StageY - y;
+						if (sqrt(pow(xdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2))
+						{
+							KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", x, y, StageZ, a);
+							ishit = true;
+						}
+					}
 				}
 			}
-		}
 
-		if (!ishit)
-		{
-			KdDebugGUI::Instance().AddLog("3OK\n");
-			if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
+			if (!ishit)
 			{
-				m_pStage->SubtractGoal();
-				m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
+				KdDebugGUI::Instance().AddLog("2OK\n");
+				if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
+				{
+					m_pStage->SubtractGoal();
+					m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
+				}
+				else
+				{
+					m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+				}
+				float center = (float)(StageSize - 1) / 2.0f;
+				// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+				m_pos = Math::Vector3(squaresize * (float)(StageX - center) + squaresize / 2.0f, squaresize * (float)(StageY + 1) - squaresize / 2.0f, -squaresize * (float)(StageZ - center));
+				m_localPos = Math::Vector3(-squaresize / 2.0f, squaresize / 2.0f, 0);
+				localRotMat = Math::Matrix::Identity;
+				moveDir = Math::Vector3(1, 0, 0);
+				StageX+=1.0f;
 			}
-			else
+			break;
+		case 3:
+			if (StageZ == 0) ishit = true;
+			if (ishit) break;
+
+			for (int z = 0;z < StageZ + 1;z++)
 			{
-				m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+				for (int y = StageY;y < StageSize;y++)
+				{
+					char a = m_pStageData->at(StageX).at(y).at(z);
+					if (a == '0' || a == 'G') continue;
+					if (z == StageZ && y == StageY) continue;
+					if (y == StageY) {
+						if (StageZ - z <= m_blockType)
+						{
+							KdDebugGUI::Instance().AddLog("[%f][%d][%d] %c Hit\n", StageX, y, z, a);
+							ishit = true;
+						}
+					}
+					else
+					{
+						int zdiff = max(0, StageZ - z - 1);
+						int ydiff = StageY - y;
+						if (sqrt(pow(zdiff, 2) + pow(ydiff, 2)) < sqrt(m_blockType * 2)) 
+						{
+							KdDebugGUI::Instance().AddLog("[%f][%f][%f] %c Hit\n", StageX, y, z, a);
+							ishit = true;
+						}
+					}
+				}
 			}
-			float center = (float)(StageSize - 1) / 2.0f;
-			// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
-			m_pos = Math::Vector3(squaresize * (float)(StageX - center), squaresize * (float)(StageY + 1) - squaresize / 2.0f, -squaresize * (float)(StageZ - center) + squaresize / 2.0f);
-			m_localPos = Math::Vector3(0.0f, squaresize / 2.0f, -squaresize / 2.0f);
-			localRotMat = Math::Matrix::Identity;
-			moveDir = Math::Vector3(0, 0, 1);
-			StageZ--;
-		}
+
+			if (!ishit)
+			{
+				KdDebugGUI::Instance().AddLog("3OK\n");
+				if (m_pStageData->at(StageX).at(StageY).at(StageZ) == 'b')
+				{
+					m_pStage->SubtractGoal();
+					m_pStage->SetStageData(StageX, StageY, StageZ, 'G');
+				}
+				else
+				{
+					m_pStage->SetStageData(StageX, StageY, StageZ, '0');
+				}
+				float center = (float)(StageSize - 1) / 2.0f;
+				// これはブロックが1×1の時の処理なので、ブロックが1×2や1×3の時は端座標を計算しなおす必要がある
+				m_pos = Math::Vector3(squaresize * (float)(StageX - center), squaresize * (float)(StageY + 1) - squaresize / 2.0f, -squaresize * (float)(StageZ - center) + squaresize / 2.0f);
+				m_localPos = Math::Vector3(0.0f, squaresize / 2.0f, -squaresize / 2.0f);
+				localRotMat = Math::Matrix::Identity;
+				moveDir = Math::Vector3(0, 0, 1);
+				StageZ-=1.0f;
+			}
+			break;
+		}	
 		break;
 	}
 	if (!ishit) //当たってないなら
-	{
-		//m_pos += moveDir * 16.0f;
-		rollFlg = Flg;
-		rollCount = 0;
-	}
-	
+		{
+			rollFlg = Flg;
+			rollCount = 0;
+		}
 }
 

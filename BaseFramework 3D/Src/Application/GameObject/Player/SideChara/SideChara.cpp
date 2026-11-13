@@ -101,10 +101,14 @@ void SideChara::Update()
 				{
 					Math::Vector3 p_pos = pSideBlock->GetPos();
 					int dirFlg;
+					//KdDebugGUI::Instance().AddLog("%f,%f,%f\n", groundPos.x, groundPos.y, groundPos.z);
+					//KdDebugGUI::Instance().AddLog("%f,%f,%f\n", p_pos.x, p_pos.y, p_pos.z);
 					float xdiff =groundPos.x - p_pos.x;
 					float ydiff =groundPos.y - p_pos.y;
 					float zdiff =groundPos.z - p_pos.z;
-					if (abs(BlockSize.x - abs(xdiff)) > abs(BlockSize.z - abs(zdiff))) 
+					BlockSize = Math::Vector3(abs(BlockSize.x), abs(BlockSize.y), abs(BlockSize.z));
+					//KdDebugGUI::Instance().AddLog("%f,%f,%f\n", abs(BlockSize.x-abs(xdiff)), abs(BlockSize.y-abs(ydiff)), abs(BlockSize.z-abs(zdiff)));
+					if (abs(abs(BlockSize.x) - abs(xdiff)) > abs(BlockSize.z - abs(zdiff))) 
 					{
 						if (abs(BlockSize.z - abs(zdiff)) > abs(BlockSize.y - abs(ydiff))) 
 						{
@@ -131,7 +135,9 @@ void SideChara::Update()
 					if (dirFlg != -1)
 					{
 						pSideBlock->PushBlock(dirFlg);
+						
 					}
+					
 				}
 			}
 			// デバッグ表示（ヒットしたら赤、していなければ緑）

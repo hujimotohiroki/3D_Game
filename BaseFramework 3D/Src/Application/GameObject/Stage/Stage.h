@@ -15,8 +15,8 @@ public:
 	void SetStage(int stage) { m_stage = stage; }
 	void SetGameScene(GameScene* scene) { m_gameScene = scene; }
 
-	void SetStageData(int x, int y, int z, char data) {
-		StageData[x][y][z] = data;
+	void SetStageData(float x, float y, float z, char data) {
+		StageData[round(x)][round(y)][round(z)] = data;
 	}
 
 	void AddGoal() { Goal++; }
