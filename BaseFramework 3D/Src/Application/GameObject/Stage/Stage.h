@@ -22,6 +22,7 @@ public:
 	void AddGoal() { Goal++; }
 	void SubtractGoal() { Goal--; }
 private:
+	const float squaresize = 16.0f;
 
 	GameScene* m_gameScene = nullptr;
 

@@ -31,14 +31,14 @@ void goal::Update()
 		if (!hitflg) 
 		{
 			hitflg = true;
-			m_stage->AddGoal();
+			//m_stage->AddGoal();
 			KdDebugGUI::Instance().AddLog("GoalHit");
 		}
 	}
 	if (!tmp&&hitflg)
 	{
 		hitflg = false;
-		m_stage->SubtractGoal();
+		//m_stage->SubtractGoal();
 	}
 	//m_pDebugWire->AddDebugBox(Math::Matrix::CreateTranslation(m_pos), Math::Vector3(8.0f, 8.0f, 8.0f), Math::Vector3::Zero, true, Math::Color(0, 1, 0, 1));
 	m_mWorld = Math::Matrix::CreateScale(4) * Math::Matrix::CreateTranslation(m_pos);
