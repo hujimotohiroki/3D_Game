@@ -16,18 +16,13 @@ public:
 	void SetTarget(std::weak_ptr<KdGameObject> target) { m_wpTarget = target; }
 	void SetBlockType(int type) {m_blockType = type;}
 	void SetBlockSize(Math::Vector3 size) { m_blockSize = size; m_collisionHalfSize = m_blockSize * 8.0f; }
-	Math::Vector3 GetBlockSize() { return m_blockSize; }
+	Math::Vector3 GetBlockSize() { return m_blockSize*squaresize/2.0f; }
 	void PushBlock(int Flg);
 	void SetStage(Stage* stage) { m_pStage = stage; }
 	void SetStagePos(int x, int y, int z) { StageX = x; StageY = y; StageZ = z; }
 	void SetStageSize(int size) { StageSize = size; }
 
-	Math::Vector3 GetPos() {
-		return m_pos + Math::Vector3::TransformNormal(m_localPos, Math::Matrix::CreateFromYawPitchRoll(
-			DirectX::XMConvertToRadians(m_localRot.y),
-			DirectX::XMConvertToRadians(m_localRot.x),
-			DirectX::XMConvertToRadians(m_localRot.z)));
-	}
+	
 
 	void SetStageDataptr(array<array<array<char, 10>, 10>, 10>* stageData) { m_pStageData = stageData; }
 private:
