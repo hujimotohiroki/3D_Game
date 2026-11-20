@@ -232,7 +232,7 @@ void SideChara::PostUpdate()
 	DirectX::BoundingOrientedBox blockBox;
 
 	blockBox.Center = m_pos;
-	blockBox.Extents = Math::Vector3(4.0f, 4.0f, 4.0f);
+	blockBox.Extents = Math::Vector3(4.0f, 7.0f, 4.0f);
 	blockBox.Orientation =
 		Math::Quaternion::CreateFromRotationMatrix(cameraRotMat);
 

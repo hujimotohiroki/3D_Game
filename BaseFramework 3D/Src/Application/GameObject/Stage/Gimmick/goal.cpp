@@ -32,7 +32,7 @@ void goal::Update()
 		{
 			hitflg = true;
 			//m_stage->AddGoal();
-			KdDebugGUI::Instance().AddLog("GoalHit");
+			//KdDebugGUI::Instance().AddLog("GoalHit");
 		}
 	}
 	if (!tmp&&hitflg)

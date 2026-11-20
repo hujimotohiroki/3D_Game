@@ -10,7 +10,7 @@ void TopGround::Init()
 
 	groundBox.Center = Math::Vector3::Zero;
 	groundBox.Center.y += 1.0f;
-	groundBox.Extents = Math::Vector3(stagesize*2, 1.0f, stagesize*2);
+	groundBox.Extents = Math::Vector3((stagesize-2)*2, 1.0f, (stagesize-2)*2);
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape(
 		"GroundCollision",

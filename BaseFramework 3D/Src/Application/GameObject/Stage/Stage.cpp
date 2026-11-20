@@ -75,7 +75,7 @@ void Stage::LoadStage()
 			sideBlock->SetStageDataptr(&StageData);
 			sideBlock->SetBlockSize(Math::Vector3(xsize, ysize, zsize));
 			sideBlock->Init();
-			sideBlock->SetPos(Math::Vector3(squaresize*(x-center), squaresize * (y + 1.0f), -squaresize* (z - center)));
+			sideBlock->SetPos(Math::Vector3(squaresize*(x-center), squaresize * y, -squaresize* (z - center)));
 			sideBlock->SetStagePos(x, y, z);
 			sideBlock->SetStageSize(StageSize);
 			SceneManager::Instance().AddObject(sideBlock);
@@ -89,7 +89,7 @@ void Stage::LoadStage()
 			goalObj->SetGameScene(m_gameScene);
 			goalObj->SetStage(this);
 			goalObj->Init();
-			goalObj->SetPos(Math::Vector3(squaresize*(x-center), squaresize * (y + 1.0f), -squaresize * (z - center)));
+			goalObj->SetPos(Math::Vector3(squaresize*(x-center), squaresize * y, -squaresize * (z - center)));
 			SceneManager::Instance().AddObject(goalObj);
 		}
 		std::shared_ptr<Scaffold> scaffold = std::make_shared<Scaffold>();
@@ -101,7 +101,7 @@ void Stage::LoadStage()
 			scaffold = std::make_shared<Scaffold>();
 			scaffold->SetGameScene(m_gameScene);
 			scaffold->Init();
-			scaffold->SetPos(Math::Vector3(squaresize * (x - center), squaresize * (y + 1.0f)+8.0f, -squaresize * (z - center)));
+			scaffold->SetPos(Math::Vector3(squaresize * (x - center), squaresize * y, -squaresize * (z - center)));
 			SceneManager::Instance().AddObject(scaffold);
 		}
 		for (int y = 0;y < StageSize;y++) {

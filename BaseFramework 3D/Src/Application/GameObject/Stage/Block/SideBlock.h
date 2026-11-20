@@ -15,11 +15,11 @@ public:
 	void DrawLit()override;
 	void SetTarget(std::weak_ptr<KdGameObject> target) { m_wpTarget = target; }
 	void SetBlockType(int type) {m_blockType = type;}
-	void SetBlockSize(Math::Vector3 size) { m_blockSize = size; m_collisionHalfSize = m_blockSize * 8.0f; }
-	Math::Vector3 GetBlockSize() { return m_blockSize*squaresize/2.0f; }
+	void SetBlockSize(Math::Vector3 size) { m_blockHalfSize = size * 0.5f; m_collisionHalfSize = m_blockHalfSize * squaresize; }
+	Math::Vector3 GetBlockSize() { return m_blockHalfSize*squaresize; }
 	void PushBlock(int Flg);
 	void SetStage(Stage* stage) { m_pStage = stage; }
-	void SetStagePos(int x, int y, int z) { StageX = x; StageY = y; StageZ = z; }
+	void SetStagePos(float x, float y, float z) { StageX = x; StageY = y; StageZ = z; }
 	void SetStageSize(int size) { StageSize = size; }
 
 	
@@ -36,11 +36,11 @@ private:
 	Math::Vector3 m_localRot = Math::Vector3::Zero;
 	Math::Matrix localRotMat = Math::Matrix::Identity;
 	
-	int StageX, StageY, StageZ;
+	float StageX, StageY, StageZ;
 	int StageSize;
 	DirectX::BoundingOrientedBox blockBox;
 	int m_blockType = 1;
-	Math::Vector3 m_blockSize = {1, 1, 1};
+	Math::Vector3 m_blockHalfSize = {0.5f, 0.5f, 0.5f};
 	Math::Vector3 m_collisionHalfSize = {8,8,8};
 	int rollFlg = -1;
 	int rollCount = 0;

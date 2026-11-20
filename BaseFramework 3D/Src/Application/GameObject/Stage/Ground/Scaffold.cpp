@@ -8,8 +8,8 @@ void Scaffold::Init()
 	m_pCollider->RegisterCollisionShape("GroundCollision", m_model, KdCollider::TypeGround );*/
 	
 
-	groundBox.Center = Math::Vector3::Zero;
-	groundBox.Center.y -= 0.1f;
+	groundBox.Center = m_pos;
+	groundBox.Center.y += 2.0f;
 	groundBox.Extents = Math::Vector3(2.0f, 0.1f, 2.0f);
 	m_pCollider = std::make_unique<KdCollider>();
 	m_pCollider->RegisterCollisionShape(
