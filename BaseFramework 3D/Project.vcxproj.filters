@@ -171,9 +171,6 @@
     <ClInclude Include="src\Framework\KdFramework.h">
       <Filter>Src\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\Library\strconv.h">
-      <Filter>Library</Filter>
-    </ClInclude>
     <ClInclude Include="src\Framework\Window\KdWindow.h">
       <Filter>Src\Framework\Window</Filter>
     </ClInclude>
@@ -383,6 +380,9 @@
     </ClInclude>
     <ClInclude Include="Src\Application\GameObject\Stage\Ground\Scaffold.h">
       <Filter>Src\Application\GameObject\Stage\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\strconv.h">
+      <Filter>Src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
