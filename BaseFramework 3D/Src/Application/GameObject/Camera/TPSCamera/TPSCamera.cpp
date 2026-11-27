@@ -6,9 +6,9 @@ void TPSCamera::Init()
 	CameraBase::Init();
 
 	// 注視点
-	m_mLocalPos = Math::Matrix::CreateTranslation(0.0f, 5.0f, -30.0f);
+	m_mLocalPos = Math::Matrix::CreateTranslation(0.0f, 25.0f, -75.0f);
 
-	m_mRotation = Math::Matrix::CreateRotationX(DirectX::XMConvertToRadians(90));
+	m_DegAng.x = 30.0f;
 
 	SetCursorPos(m_FixMousePos.x, m_FixMousePos.y);
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
@@ -26,6 +26,7 @@ void TPSCamera::PostUpdate()
 
 	// カメラの回転
 	//UpdateRotateByMouse();
+	m_DegAng.y += 1.0f;
 	m_mRotation = GetRotationMatrix();
 	m_mWorld = m_mLocalPos * m_mRotation * _targetMat   ;
 

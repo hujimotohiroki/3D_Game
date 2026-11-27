@@ -61,9 +61,10 @@ void Stage::LoadStage()
 		SceneManager::Instance().AddObject(topGround);
 		
 		float center = (float)(StageSize - 1) /2.0f;
-		fscanf_s(fp, "%d\n", &GoalCount);
+		int BlockCount;
+		fscanf_s(fp, "%d\n", &BlockCount);
 		std::shared_ptr<SideBlock> sideBlock;
-		for (int i = 0;i < GoalCount;i++) {
+		for (int i = 0;i < BlockCount;i++) {
 			
 			float x, y, z, xsize,ysize,zsize;
 			int type;
@@ -80,6 +81,8 @@ void Stage::LoadStage()
 			sideBlock->SetStageSize(StageSize);
 			SceneManager::Instance().AddObject(sideBlock);
 		}
+
+		fscanf_s(fp, "%d\n", &GoalCount);
 		std::shared_ptr<goal> goalObj;
 		for (int i = 0;i < GoalCount;i++) {
 			

@@ -17,7 +17,7 @@ private:
 	void Event() override;
 	void Init()  override;
 	
-	
+	int choosetime;
 
 	std::shared_ptr<StageSelect> stageselect;
 };

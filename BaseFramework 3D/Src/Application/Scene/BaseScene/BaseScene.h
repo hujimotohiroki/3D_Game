@@ -29,7 +29,7 @@ public :
 	}
 
 	// StageSelectSceneでしか使わない
-	int GetNowSelect() { return nowselect; }
+	int GetNowSelect() { return m_nowStage; }
 
 	// GameSceneでしか使わない
 	void SetNowStage(int stage) { m_nowStage = stage; }
@@ -43,6 +43,5 @@ protected :
 	// 全オブジェクトのアドレスをリストで管理
 	std::list<std::shared_ptr<KdGameObject>> m_objList;
 
-	int nowselect = 1;
 	int m_nowStage = 1;
 };
